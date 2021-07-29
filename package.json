@@ -1,0 +1,24 @@
+{
+  "name": "sys-doc",
+  "version": "1.0.0",
+  "description": "> 知识体系文档",
+  "main": "index.js",
+  "scripts": {
+    "start": "vuepress dev docs",
+    "build": "vuepress build docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chttyCode/sys-doc.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chttyCode/sys-doc/issues"
+  },
+  "homepage": "https://github.com/chttyCode/sys-doc#readme",
+  "devDependencies": {
+    "vuepress": "^1.8.2"
+  }
+}
