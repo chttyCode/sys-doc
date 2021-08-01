@@ -7,7 +7,7 @@ module.exports = {
     nav,
     logo: "/imgs/logo.jpeg",
     sidebar,
-    lastUpdated: "Last Updated", // string | boolean
+    lastUpdated: "更新", // string | boolean
 
     // github 访问
     repo: "chttyCode/sys-doc",
@@ -15,4 +15,17 @@ module.exports = {
     editLinks: true,
     editLinkText: "编辑此内容",
   },
+  plugins: [
+    [
+      "@vuepress/last-updated",
+      {
+        transformer: (timestamp, lang) => {
+          // 不要忘了安装 moment
+          const moment = require("moment");
+          moment.locale(lang);
+          return moment(timestamp).fromNow();
+        },
+      },
+    ],
+  ],
 };

@@ -9,7 +9,7 @@ features:
   - title: 技术
     details: 始于前端,不止于前端,励志成为一名优秀的全栈工程师,真正的实现码中致富
   - title: 生活
-    details: 久视伤血 久卧伤气 久坐伤肉 久行伤筋 久坐伤骨 怒则气上 喜则气缓 思则气结 悲则气消 恐则气下 忧则气凝 惊则气乱
+    details: 怒则气上 喜则气缓 思则气结 悲则气消 恐则气下 忧则气凝 惊则气乱
 
 footer: MIT Licensed | Copyright © 2021-chtty
 ---

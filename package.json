@@ -20,5 +20,8 @@
   "homepage": "https://github.com/chttyCode/sys-doc#readme",
   "devDependencies": {
     "vuepress": "^1.8.2"
+  },
+  "dependencies": {
+    "moment": "^2.29.1"
   }
 }
