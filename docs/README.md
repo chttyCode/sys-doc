@@ -1,15 +1,15 @@
 ---
 home: true
-heroText: Hero 标题
-tagline: Hero 副标题
-actionText: 快速上手 →
-actionLink: /zh/guide/
+tagline: 书以启智,技于谋生
+actionText: 开始阅读 →
+actionLink: /programme/
 features:
-  - title: 简洁至上
-    details: 以 Markdown 为中心的项目结构，以最少的配置帮助你专注于写作。
-  - title: Vue驱动
-    details: 享受 Vue + webpack 的开发体验，在 Markdown 中使用 Vue 组件，同时可以使用 Vue 来开发自定义主题。
-  - title: 高性能
-    details: VuePress 为每个页面预渲染生成静态的 HTML，同时在页面被加载的时候，将作为 SPA 运行。
-footer: MIT Licensed | Copyright © 2018-present Evan You
+  - title: 读书
+    details: 文以载道,虚心学习,自省自知,多读一页书,就少一分无知,多一分智慧
+  - title: 技术
+    details: 始于前端,不止于前端,励志成为一名优秀的全栈工程师,真正的实现码中致富
+  - title: 生活
+    details: 久视伤血 久卧伤气 久坐伤肉 久行伤筋 久坐伤骨 怒则气上 喜则气缓 思则气结 悲则气消 恐则气下 忧则气凝 惊则气乱
+
+footer: MIT Licensed | Copyright © 2021-chtty
 ---
