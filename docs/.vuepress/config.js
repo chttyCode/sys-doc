@@ -11,6 +11,7 @@ module.exports = {
 
     // github 访问
     repo: "chttyCode/sys-doc",
+    docsDir: "docs",
     editLinks: true,
     editLinkText: "编辑此内容",
   },
