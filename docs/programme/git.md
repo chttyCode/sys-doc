@@ -25,13 +25,13 @@
     - 6c4db3f version 1
 ```
 
-    - --no-commit 后可以最后一起手动提交
+- --no-commit 后可以最后一起手动提交
 
 ```js
     git revert --no-commit f7742cd..551c408
 ```
 
-    - commit记录
+- commit 记录
 
 ```js
     * 8fef80a (HEAD -> master) This reverts commit 7e345c9 and 551c408
