@@ -1,7 +1,6 @@
 const nav = require("./nav");
 const sidebar = require("./sidebar");
 module.exports = {
-  base: "sys-doc",
   title: "sys-doc",
   themeConfig: {
     nav,
