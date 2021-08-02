@@ -7,7 +7,7 @@ module.exports = {
     nav,
     logo: "/imgs/logo.jpeg",
     sidebar,
-    lastUpdated: "更新", // string | boolean
+    lastUpdated: "上次更新", // string | boolean
 
     // github 访问
     repo: "chttyCode/sys-doc",
@@ -23,7 +23,7 @@ module.exports = {
           // 不要忘了安装 moment
           const moment = require("moment");
           moment.locale(lang);
-          return moment(timestamp).fromNow();
+          return moment(timestamp).format("YYYY/MM/DD");
         },
       },
     ],

@@ -43,5 +43,6 @@ module.exports = {
       ],
     },
   ],
+  "/framework/": [["", "framework"], "monitor"],
   "/leetCode/": [["", "leetCode"]],
 };
