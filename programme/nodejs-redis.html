@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Redis | sys-doc</title>
+    <meta name="generator" content="VuePress 1.8.2">
+    
+    <meta name="description" content="">
+    
+    <link rel="preload" href="/sys-doc/assets/css/0.styles.f2c13968.css" as="style"><link rel="preload" href="/sys-doc/assets/js/app.b23a5398.js" as="script"><link rel="preload" href="/sys-doc/assets/js/2.01d9652a.js" as="script"><link rel="preload" href="/sys-doc/assets/js/32.9a07fe33.js" as="script"><link rel="prefetch" href="/sys-doc/assets/js/10.3afa6a3e.js"><link rel="prefetch" href="/sys-doc/assets/js/11.fd110728.js"><link rel="prefetch" href="/sys-doc/assets/js/12.54e22332.js"><link rel="prefetch" href="/sys-doc/assets/js/13.e0346537.js"><link rel="prefetch" href="/sys-doc/assets/js/14.49347dc0.js"><link rel="prefetch" href="/sys-doc/assets/js/15.a0caf336.js"><link rel="prefetch" href="/sys-doc/assets/js/16.98d42781.js"><link rel="prefetch" href="/sys-doc/assets/js/17.d8c3aaf5.js"><link rel="prefetch" href="/sys-doc/assets/js/18.665cbcc6.js"><link rel="prefetch" href="/sys-doc/assets/js/19.32c9e16f.js"><link rel="prefetch" href="/sys-doc/assets/js/20.53c2b4c1.js"><link rel="prefetch" href="/sys-doc/assets/js/21.4051b3b3.js"><link rel="prefetch" href="/sys-doc/assets/js/22.5c955500.js"><link rel="prefetch" href="/sys-doc/assets/js/23.97971051.js"><link rel="prefetch" href="/sys-doc/assets/js/24.e6ad56b6.js"><link rel="prefetch" href="/sys-doc/assets/js/25.030f9a50.js"><link rel="prefetch" href="/sys-doc/assets/js/26.7282f031.js"><link rel="prefetch" href="/sys-doc/assets/js/27.9620c187.js"><link rel="prefetch" href="/sys-doc/assets/js/28.343695a6.js"><link rel="prefetch" href="/sys-doc/assets/js/29.09ef711b.js"><link rel="prefetch" href="/sys-doc/assets/js/3.92ec9526.js"><link rel="prefetch" href="/sys-doc/assets/js/30.6ba6dd0b.js"><link rel="prefetch" href="/sys-doc/assets/js/31.23a40e39.js"><link rel="prefetch" href="/sys-doc/assets/js/33.d450fa6f.js"><link rel="prefetch" href="/sys-doc/assets/js/34.fcd8d926.js"><link rel="prefetch" href="/sys-doc/assets/js/35.998f261d.js"><link rel="prefetch" href="/sys-doc/assets/js/36.8a38ac6e.js"><link rel="prefetch" href="/sys-doc/assets/js/37.52a031f7.js"><link rel="prefetch" href="/sys-doc/assets/js/38.804e757a.js"><link rel="prefetch" href="/sys-doc/assets/js/39.fa5543d6.js"><link rel="prefetch" href="/sys-doc/assets/js/4.ba3164ba.js"><link rel="prefetch" href="/sys-doc/assets/js/5.75a3592b.js"><link rel="prefetch" href="/sys-doc/assets/js/6.0377ba0c.js"><link rel="prefetch" href="/sys-doc/assets/js/7.e59ee139.js"><link rel="prefetch" href="/sys-doc/assets/js/8.9202dc84.js"><link rel="prefetch" href="/sys-doc/assets/js/9.6f0dc878.js">
+    <link rel="stylesheet" href="/sys-doc/assets/css/0.styles.f2c13968.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/sys-doc/" class="home-link router-link-active"><img src="/sys-doc/imgs/logo.jpeg" alt="sys-doc" class="logo"> <span class="site-name can-hide">sys-doc</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/sys-doc/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="/sys-doc/programme/" class="nav-link router-link-active">
+  编程
+</a></div><div class="nav-item"><a href="/sys-doc/engineer/" class="nav-link">
+  工程
+</a></div><div class="nav-item"><a href="/sys-doc/framework/" class="nav-link">
+  架构
+</a></div><div class="nav-item"><a href="/sys-doc/shell/" class="nav-link">
+  集锦
+</a></div><div class="nav-item"><a href="/sys-doc/leetCode/" class="nav-link">
+  LCode
+</a></div> <a href="https://github.com/chttyCode/sys-doc" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/sys-doc/" class="nav-link">
+  首页
+</a></div><div class="nav-item"><a href="/sys-doc/programme/" class="nav-link router-link-active">
+  编程
+</a></div><div class="nav-item"><a href="/sys-doc/engineer/" class="nav-link">
+  工程
+</a></div><div class="nav-item"><a href="/sys-doc/framework/" class="nav-link">
+  架构
+</a></div><div class="nav-item"><a href="/sys-doc/shell/" class="nav-link">
+  集锦
+</a></div><div class="nav-item"><a href="/sys-doc/leetCode/" class="nav-link">
+  LCode
+</a></div> <a href="https://github.com/chttyCode/sys-doc" target="_blank" rel="noopener noreferrer" class="repo-link">
+    GitHub
+    <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></a></nav>  <ul class="sidebar-links"><li><a href="/sys-doc/programme/" aria-current="page" class="sidebar-link">编程</a></li><li><a href="/sys-doc/programme/git.html" class="sidebar-link">git操作</a></li><li><a href="/sys-doc/programme/typescript.html" class="sidebar-link">Typescript</a></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>Javascript</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>nodejs</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/sys-doc/programme/nodejs.html" class="sidebar-link">NodeJs</a></li><li><a href="/sys-doc/programme/nodejs-promise.html" class="sidebar-link">Promise</a></li><li><a href="/sys-doc/programme/nodejs-stream.html" class="sidebar-link">Stream</a></li><li><a href="/sys-doc/programme/nodejs-http.html" class="sidebar-link">Http</a></li><li><a href="/sys-doc/programme/nodejs-express.html" class="sidebar-link">Express</a></li><li><a href="/sys-doc/programme/nodejs-koa.html" class="sidebar-link">Koa</a></li><li><a href="/sys-doc/programme/nodejs-redis.html" aria-current="page" class="active sidebar-link">Redis</a></li><li><a href="/sys-doc/programme/nodejs-mysql.html" class="sidebar-link">Mysql</a></li><li><a href="/sys-doc/programme/nodejs-mongodb.html" class="sidebar-link">Mongodb</a></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>react</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="redis"><a href="#redis" class="header-anchor">#</a> Redis</h1></div> <footer class="page-edit"><div class="edit-link"><a href="https://github.com/chttyCode/sys-doc/edit/master/docs/programme/nodejs-redis.md" target="_blank" rel="noopener noreferrer">编辑此内容</a> <span><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg> <span class="sr-only">(opens new window)</span></span></div> <div class="last-updated"><span class="prefix">上次更新:</span> <span class="time">2021/08/02</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/sys-doc/programme/nodejs-koa.html" class="prev">
+        Koa
+      </a></span> <span class="next"><a href="/sys-doc/programme/nodejs-mysql.html">
+        Mysql
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/sys-doc/assets/js/app.b23a5398.js" defer></script><script src="/sys-doc/assets/js/2.01d9652a.js" defer></script><script src="/sys-doc/assets/js/32.9a07fe33.js" defer></script>
+  </body>
+</html>
