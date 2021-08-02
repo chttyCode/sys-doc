@@ -18,6 +18,9 @@ module.exports = {
         "/programme/nodejs-http",
         "/programme/nodejs-express",
         "/programme/nodejs-koa",
+        "/programme/nodejs-redis",
+        "/programme/nodejs-mysql",
+        "/programme/nodejs-mongodb",
       ],
     },
     {
@@ -43,6 +46,22 @@ module.exports = {
       ],
     },
   ],
-  "/framework/": [["", "framework"], "monitor"],
+  "/framework/": [
+    ["", "framework"],
+    "monitor",
+    {
+      title: "运维",
+      collapsable: true,
+      children: [
+        "/framework/ops-linux",
+        "/framework/ops-shell",
+        "/framework/ops-nginx",
+        "/framework/ops-docker",
+        "/framework/ops-jenkins",
+        "/framework/ops-k8s",
+      ],
+    },
+  ],
   "/leetCode/": [["", "leetCode"]],
+  "/shell/": [["", "集锦"]],
 };
