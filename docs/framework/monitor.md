@@ -1,4 +1,5 @@
 # monitor
+
 # monitor
 
 ## 指标分类
@@ -106,12 +107,10 @@
 
 ## 体验
 
-- 加载时间
 - 性能指标
-
   - 指标
     |字段|描述|备注|  
-    |----|----|----|
+     |----|----|----|
     |FP|First Paint(首次绘制) |包括了任何用户自定义的背景绘制，它是首先将像素绘制到屏幕的时刻|
     |FCP| First Content Paint(首次内容绘制)| 是浏览器将第一个 DOM 渲染到屏幕的时间,可能是文本、图像、SVG 等,这其实就是白屏时间|
     |FMP| First Meaningful Paint(首次有意义绘制)| 页面有意义的内容渲染的时间|
@@ -120,7 +119,6 @@
     | | (onLoad) |当依赖的资源全部加载完毕之后才会触发|
     |TTI| (Time to Interactive) 可交互时间| 用于标记应用已进行视觉渲染并能可靠响应用户输入的时间点|
     |FID| First Input Delay(首次输入延迟)| 用户首次和页面交互(单击链接，点击按钮等)到页面响应交互的时间|
-
   - PerformanceObserver: 使用观察者模式进行性能指标统计
   - 指定检测 entry types 集合，当检测有变化时回调函数会被调用
     - element:FMP
@@ -129,6 +127,8 @@
     - largest-contentful-paint [最大的内容绘制](https://segmentfault.com/a/1190000039842975)
     - first-input:
       - 浏览器收到 click 事件到主线程得空处理它之间存在延迟。[首次输入延迟](https://segmentfault.com/a/1190000039843026?utm_source=tag-newest)
+- 加载时间
+
   - 加载时间统计
 
     | 字段                       | 含义                                                                                                                                                                                   |
@@ -183,8 +183,8 @@
 
 ## 参考
 
-> https://mp.weixin.qq.com/s/YiKRY_LDURY0uONtEhkUfg
+> [大前端时代前端监控的最佳实践](https://mp.weixin.qq.com/s/YiKRY_LDURY0uONtEhkUfg)
 
-> https://mp.weixin.qq.com/s?__biz=MjM5MTA1MjAxMQ==&mid=2651227494&idx=1&sn=444001447adef73ae8066ddfd1a01ddc&chksm=bd495ce28a3ed5f4f593dcacc315cbce554330230b8a56bcd5c980dcf4eb76cb5c4f3eaa8f12&scene=21#wechat_redirect
+> [把前端监控做到极致](https://mp.weixin.qq.com/s?__biz=MjM5MTA1MjAxMQ==&mid=2651227494&idx=1&sn=444001447adef73ae8066ddfd1a01ddc&chksm=bd495ce28a3ed5f4f593dcacc315cbce554330230b8a56bcd5c980dcf4eb76cb5c4f3eaa8f12&scene=21#wechat_redirect)
 
-> https://mp.weixin.qq.com/s?__biz=MjM5MTA1MjAxMQ==&mid=2651225487&idx=1&sn=060f827234606cd3e9a3771d67af4d0f&chksm=bd49a40b8a3e2d1dc9ed064543e236312e99a63e50987ae143012967366a1f691eff67a8ae1b&scene=21#wechat_redirect
+> [如何设计一个前端监控系统](https://mp.weixin.qq.com/s?__biz=MjM5MTA1MjAxMQ==&mid=2651225487&idx=1&sn=060f827234606cd3e9a3771d67af4d0f&chksm=bd49a40b8a3e2d1dc9ed064543e236312e99a63e50987ae143012967366a1f691eff67a8ae1b&scene=21#wechat_redirect)
