@@ -30,13 +30,23 @@ sidebarDepth: 2
   - 66
 
 - 26
+  > 注意点：1. 该数组是有序数组 2. 隐式要求就是要去返回重数组，不仅是长度  
   - 暴力解法
+  >  可正逆向删除，逆向优先
 
 ```js
+function removeDuplicates(nums) {
+  for (let i = nums.length - 1; i >= 0; i--) {
+    if (nums[i] === nums[i - 1]) {
+      nums.splice(i, 1);
+    }
+  }
+  return nums.length;
+}
 ```
 
 - 双指针
-  > 快慢指针
+  > 快慢指针，慢指针维护不重复数组的下标，快指针负责遍历数组
 
 ```js
 var removeDuplicates = function(nums) {
