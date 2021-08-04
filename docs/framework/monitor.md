@@ -180,6 +180,17 @@
 
 - 卡顿
   - PerformanceObserver entryTypes: ["longtask"]
+- PV
+  - navigator.connection
+- 在线时长
+  - 页面卸载时上报数据
+  - 解决方案
+    - 在 unload 回调中创建图片来上报数据或通过创建一个几秒钟的 no-op 循环来延迟卸载并向服务器发送数据
+    - 通过 unload 同步请求
+      - 会导致页面卸载被延迟
+    - sendBeacon()
+      - 数据量小
+      - 兼容性差
 
 ## 参考
 
