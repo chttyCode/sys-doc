@@ -31,41 +31,42 @@ sidebarDepth: 2
 
 - 26
   > 注意点：1. 该数组是有序数组 2. 隐式要求就是要去返回重数组，不仅是长度  
-  - 暴力解法
-  >  可正逆向删除，逆向优先
+  
+    - 暴力解法
+    > 可正逆向删除，逆向优先
 
-```js
-function removeDuplicates(nums) {
-  for (let i = nums.length - 1; i >= 0; i--) {
-    if (nums[i] === nums[i - 1]) {
-      nums.splice(i, 1);
+    ```js
+    function removeDuplicates(nums) {
+      for (let i = nums.length - 1; i >= 0; i--) {
+        if (nums[i] === nums[i - 1]) {
+          nums.splice(i, 1);
+        }
+      }
+      return nums.length;
     }
-  }
-  return nums.length;
-}
-```
+    ```
 
-- 双指针
-  > 快慢指针，慢指针维护不重复数组的下标，快指针负责遍历数组
+    - 双指针
+    > 快慢指针，慢指针维护不重复数组的下标，快指针负责遍历数组
 
-```js
-var removeDuplicates = function(nums) {
-  const n = nums.length;
-  if (n === 0) {
-    return 0;
-  }
-  let fast = 1,
-    slow = 1;
-  while (fast < n) {
-    if (nums[fast] !== nums[fast - 1]) {
-      nums[slow] = nums[fast];
-      ++slow;
-    }
-    ++fast;
-  }
-  return slow;
-};
-```
+    ```js
+    var removeDuplicates = function(nums) {
+      const n = nums.length;
+      if (n === 0) {
+        return 0;
+      }
+      let fast = 1,
+        slow = 1;
+      while (fast < n) {
+        if (nums[fast] !== nums[fast - 1]) {
+          nums[slow] = nums[fast];
+          ++slow;
+        }
+        ++fast;
+      }
+      return slow;
+    };
+    ```
 
 ## 2. 队列、栈、双端队列
 
