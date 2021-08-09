@@ -83,3 +83,21 @@
   - 无用的事件处理程序长驻内存导致的web应用性能不佳
   - 第一个是删除带有事件处理程序的元素
   - 另一个可能导致内存中残留引用的问题是页面卸载 
+
+### 6. 模拟事件
+> 模拟事件会被当成浏览器事件，会有时间冒泡，web测试特别有用
+
+- DOM 事件模拟
+- 模拟键盘事件
+- 模拟其他事件
+```js
+let btn = document.getElementById("myBtn");
+// 创建 event 对象
+let event = document.createEvent("MouseEvents");
+// 初始化 event 对象
+event.initMouseEvent("click", true, true, document.defaultView,
+0, 0, 0, 0, 0, false, false, false, false, 0, null);
+// 触发事件
+btn.dispatchEvent(event);
+```
+
