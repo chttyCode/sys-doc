@@ -62,6 +62,9 @@ module.exports = {
       ],
     },
   ],
-  "/leetCode/": [["", "leetCode"]],
+  "/leetCode/": [
+    ["", "leetCode"],
+    ["array", "数组、链表"],
+  ],
   "/shell/": [["", "集锦"]],
 };
