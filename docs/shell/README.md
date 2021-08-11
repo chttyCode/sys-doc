@@ -33,18 +33,50 @@ html {
   - 仓库一般都是在 linux 环境下，文件默认以 LF 结尾
   - 在 window 环境下安装 git 时，core.autocrlf 默认为 true,即会将每一个文件自动转为以 CRLF 结尾
 - 解决方案
+
   - CRLF=>LF
     - Crtl+S
     - yarn run lint --fix
     - 配置.prettierrc 文件
   - 最佳解决方案
-    - core.autocrlf 主要是在跨平台开发时保证项目的统一，如果项目仅在 window 下，可以将该属性设置为 false,即对项目的提交检出不进行回车换行的转换
-    - 禁用转换
+
+    - 禁用检出提交默认转化
+
     ```js
-    git config --global core.autocrlf false
+       git config --global core.autocrlf false
     ```
-    - 提交转换
+
+    - repo 根目录添加.gitattributes 文件
+      > 统一项目开发 git 回车换行配置(解耦 git 本地 配置)
+
     ```js
-    git config --global core.autocrlf input
+    * text=auto eol=lf
     ```
+
+    - 新增文件控制
+
+      - 在 repo 根目录添加.editorconfig
+
+      ```js
+      # EditorConfig is awesome: http://EditorConfig.org
+
+      # top-most EditorConfig file
+      root = true
+
+      # Unix-style newlines with a newline ending every file
+      [*]
+      end_of_line = lf
+      insert_final_newline = true
+      ```
+
+    - 应用.gitattributes 配置 批量修改
+
+    ```js
+    git add --renormalize .
+    ```
+
+- 文件回车换行
+  - window - git clone(core.autocrlf=true,将文件回车换行=>\r\n,CRLF)=>vscode(setting->text Editor->file->Eol) =>git commit(hooks 或 git 将 CRLF=>LF)
+    > [stackoverflow](https://stackoverflow.com/questions/2517190/how-do-i-force-git-to-use-lf-instead-of-crlf-under-windows/13154031#13154031)
+
 ### typescript非空断言
