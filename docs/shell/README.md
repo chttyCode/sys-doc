@@ -77,6 +77,17 @@ html {
 
 - 文件回车换行
   - window - git clone(core.autocrlf=true,将文件回车换行=>\r\n,CRLF)=>vscode(setting->text Editor->file->Eol) =>git commit(hooks 或 git 将 CRLF=>LF)
-    > [stackoverflow](https://stackoverflow.com/questions/2517190/how-do-i-force-git-to-use-lf-instead-of-crlf-under-windows/13154031#13154031)
+
+- [vscode 设置\n & core.autocrlf false,文件还是没有切换诚 LF](https://stackoverflow.com/questions/49228693/how-to-change-eol-for-all-files-from-clrf-to-lf-in-visual-studio-code)
+
+  - 方法一:删除分支，重新拉没能解决问题
+  - 方法二:删除缓存
+
+  ```js
+  git config core.autocrlf false
+  git rm --cached -r .
+  git reset --hard
+  ```
+> [stackoverflow](https://stackoverflow.com/questions/2517190/how-do-i-force-git-to-use-lf-instead-of-crlf-under-windows/13154031#13154031)
 
 ### typescript非空断言
