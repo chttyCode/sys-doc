@@ -3,12 +3,12 @@
 - 配置查看
   - config 配置指令
   ```js
-  git config 
+  git config
   ```
-  - 查看系统config
+  - 查看系统 config
   ```js
   git config --system --list
-  ``` 
+  ```
   - 查看当前用户（global）配置
   ```js
   git config --global  --list
@@ -17,3 +17,4 @@
   ```js
   git config --local  --list
   ```
+- SSH 免密与 Token 登录配置

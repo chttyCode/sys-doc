@@ -99,8 +99,8 @@
         - loading: 表示文档正在加载中。
         - interactive: 表示文档已完成加载，文档已被解析，但图像、样式表和框架等子资源仍在加载。
         - complete: 表示文档和所有子资源已完成加载。如果状态变成这个，表明 load 事件即将触发
-        - https://developer.mozilla.org/zh-CN/docs/Web/API/Document/readystatechange_event
-        - https://www.zhangxinxu.com/wordpress/2019/10/document-readystate/
+        - [Document: readystatechange 事件](https://developer.mozilla.org/zh-CN/docs/Web/API/Document/readystatechange_event)
+        - [幸好 document.readyState 还是有点锤子用的](https://www.zhangxinxu.com/wordpress/2019/10/document-readystate/)
     - 采点
       - document.elementsFromPoint()，该函数返还在特定坐标点下的 HTML 元素数组。
       - 采用十字交叉轴上的 18 个点
@@ -180,6 +180,8 @@
 
 - 卡顿
   - PerformanceObserver entryTypes: ["longtask"]
+  - [requestIdleCallback](https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback)
+    - 存在兼容性问题，可通过 requestAnimationFrame+任务队列模拟，可参考编程-react-源码的实现方式
 - PV
   - navigator.connection
 - 在线时长

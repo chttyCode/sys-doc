@@ -3,6 +3,7 @@
         "basequery",
         "immer",
         "nums",
+        "unshift",
         "vuepress"
     ]
 }
