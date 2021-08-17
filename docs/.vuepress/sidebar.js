@@ -6,7 +6,11 @@ module.exports = {
     {
       title: "Javascript",
       collapsable: true,
-      children: ["/programme/javascript", "/programme/javascript-red"],
+      children: [
+        "/programme/javascript",
+        "/programme/javascript-red-17",
+        "/programme/javascript-red-18",
+      ],
     },
     {
       title: "nodejs",
