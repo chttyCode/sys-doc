@@ -77,3 +77,34 @@
     }
   });
   ```
+  
+  ### 2. 基本的画布功能
+
+- 创建 canvas 元素时至少要设置其 width 和 height 属性，可以在 dom 上设置，也可以通过 css 样式添加
+- 可以使用 toDataURL() 方法导出 canvas 元素上的图像
+  - 浏览器默认将图像编码为 PNG 格式
+  - 如果画布中的图像是其他域绘制过来的， toDataURL() 方法就会抛出错误?
+
+### 3. 2D 绘图上下文
+
+- 2D 上下文的坐标原点(0, 0)在 canvas 元素的左上角
+- 填充和描边
+  - fillStyle 和 strokeStyle
+  - 这两个属性也可以是渐变或图案
+- 绘制矩形
+  - api
+    - fillRect() 、 strokeRect() 和 clearRect()
+    - 描边宽度由 lineWidth 属性控制
+    - lineCap 属性控制线条端点的形状:［ "butt" （平头）、 "round" （出圆头）或 "square" （出方头）］
+    - lineJoin 属性控制线条交点的形状:［ "round" （圆转）、 "bevel" （取平）或 "miter" （出尖）］
+- 绘制路径
+  - 必须首先调用 beginPath() 方法以表示要开始绘制新路径
+  - api
+    - arc 画圆
+    - arcTo 画弧线
+    - bezierCurveTo 三次贝塞尔曲线
+    - lineTo 直线
+    - moveTo(x, y) ：不绘制线条，只把绘制光标移动到 (x, y)
+    - quadraticCurveTo 二次贝塞尔曲线
+    - rect 矩形
+- 与 strokeRect() 和 fillRect() 的区别在于，它创建的是一条路径，而不是独立的图形
