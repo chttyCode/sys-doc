@@ -36,6 +36,7 @@ module.exports = {
         "/programme/react-source",
       ],
     },
+    ["browser", "浏览器"],
   ],
   "/engineer/": [
     ["", "工程"],
