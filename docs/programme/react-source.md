@@ -444,16 +444,285 @@
     }
     ```
 
-    - 可以看出来，如果第一次调用 addRootToSchedule 的时候，nextScheduledRoot 是 null，这时候公共变量 firstScheduledRoot 和 lastScheduledRoot 也是 null，所以会把他们都赋值成 root，同时 root.nextScheduledRoot = root
-    - 然后第二次进来的时候，如果前后 root 是同一个，那么之前的 firstScheduledRoot 和 lastScheduledRoot 都是 root，所以 lastScheduledRoot.nextScheduledRoot = root 就等于 root.nextScheduledRoot = root
-    - 这么做是因为同一个 root 不需要存在两个，因为前一次调度如果中途被打断，下一次调度进入还是从同一个 root 开始，就会把新的任务一起执行了。
+    - 将 root 添加到调度队列中
 
   - 之后根据 expirationTime 调用 performSyncWork 还是 scheduleCallbackWithExpirationTime
 
+- scheduleCallbackWithExpirationTime
+
+  ```js
+  function scheduleCallbackWithExpirationTime(root, expirationTime) {
+    if (callbackExpirationTime !== NoWork) {
+      // A callback is already scheduled. Check its expiration time (timeout).
+      if (expirationTime > callbackExpirationTime) {
+        // Existing callback has sufficient timeout. Exit.
+        return;
+      } else {
+        if (callbackID !== null) {
+          // Existing callback has insufficient timeout. Cancel and schedule a
+          // new one.
+          scheduler.unstable_cancelCallback(callbackID);
+        }
+      } // The request callback timer is already running. Don't start a new one.
+    } else {
+      startRequestCallbackTimer();
+    }
+
+    callbackExpirationTime = expirationTime;
+    var currentMs = scheduler.unstable_now() - originalStartTimeMs;
+    var expirationTimeMs = expirationTimeToMs(expirationTime);
+    var timeout = expirationTimeMs - currentMs;
+    callbackID = scheduler.unstable_scheduleCallback(performAsyncWork, {
+      timeout: timeout,
+    });
+  }
+  ```
+
+  - 计算过期时间
+  - 进入调度
+
+- unstable_scheduleCallback
+
+  - 时间分片
+  - 模拟 requestIdleCallback(浏览器空闲时执行，存在兼容性问题)
+
+    ```js
+    function unstable_scheduleCallback(callback, deprecated_options) {
+      var startTime = currentEventStartTime !== -1 ? currentEventStartTime : exports.unstable_now();
+      var expirationTime;
+
+      if (
+        typeof deprecated_options === 'object' &&
+        deprecated_options !== null &&
+        typeof deprecated_options.timeout === 'number'
+      ) {
+        // FIXME: Remove this branch once we lift expiration times out of React.
+        expirationTime = startTime + deprecated_options.timeout;
+      } else {
+        // 根据currentPriorityLevel 计算 expirationTime
+      }
+
+      var newNode = {
+        callback: callback,
+        priorityLevel: currentPriorityLevel,
+        expirationTime: expirationTime,
+        next: null,
+        previous: null,
+      }; // Insert the new callback into the list, ordered first by expiration, then
+      // by insertion. So the new callback is inserted any other callback with
+      // equal expiration.
+
+      if (firstCallbackNode === null) {
+        // This is the first callback in the list.
+        firstCallbackNode = newNode.next = newNode.previous = newNode;
+        ensureHostCallbackIsScheduled();
+      } else {
+      // 非首次渲染
+      }
+
+        var previous = next.previous;
+        previous.next = next.previous = newNode;
+        newNode.next = next;
+        newNode.previous = previous;
+      }
+
+      return newNode;
+    }
+    ```
+
+    - ensureHostCallbackIsScheduled
+
+      ```js
+      function ensureHostCallbackIsScheduled() {
+        if (isExecutingCallback) {
+          // Don't schedule work yet; wait until the next time we yield.
+          return;
+        } // Schedule the host callback using the earliest expiration in the list.
+
+        var expirationTime = firstCallbackNode.expirationTime;
+
+        if (!isHostCallbackScheduled) {
+          isHostCallbackScheduled = true;
+        } else {
+          // Cancel the existing host callback.
+          cancelHostCallback();
+        }
+
+        _requestHostCallback(flushWork, expirationTime);
+      }
+      ```
+
+      - 判断是否正在执行调度
+      - 调用\_requestHostCallback
+
+        ```js
+        function _requestHostCallback(callback, absoluteTimeout) {
+          scheduledHostCallback = callback;
+          timeoutTime = absoluteTimeout;
+
+          if (isFlushingHostCallback || absoluteTimeout < 0) {
+            // Don't wait for the next frame. Continue working ASAP, in a new event.
+            window.postMessage(messageKey, '*');
+          } else if (!isAnimationFrameScheduled) {
+            // If rAF didn't already schedule one, we need to schedule a frame.
+            // TODO: If this rAF doesn't materialize because the browser throttles, we
+            // might want to still have setTimeout trigger rIC as a backup to ensure
+            // that we keep performing work.
+            isAnimationFrameScheduled = true;
+            requestAnimationFrameWithTimeout(animationTick);
+          }
+        }
+        ```
+
+        - 如果过期则通过任务队列，将 firstCallbackNode 加入调度队列
+        - 如果没过期则进入调度，设置 isAnimationFrameScheduled 为 true,调用 requestAnimationFrameWithTimeout
+        - 调用 requestAnimationFrameWithTimeout
+
+          ```js
+          function requestAnimationFrameWithTimeout(callback) {
+            // schedule rAF and also a setTimeout
+            rAFID = localRequestAnimationFrame(function (timestamp) {
+              // cancel the setTimeout
+              localClearTimeout(rAFTimeoutID);
+              callback(timestamp);
+            });
+            rAFTimeoutID = localSetTimeout(function () {
+              // cancel the requestAnimationFrame
+              localCancelAnimationFrame(rAFID);
+              callback(exports.unstable_now());
+            }, ANIMATION_FRAME_TIMEOUT);
+          }
+          ```
+
+          - 这是一个相互取消的操作，如果在 ANIMATION_FRAME_TIMEOUT，requestAnimationFrame 没有执行，则通过定时器执行(?)
+          - animationTick
+
+            - 通过 requestAnimationFrame 或者定时器加入队列调用
+
+              ```js
+              function animationTick(rafTime) {
+                if (scheduledHostCallback !== null) {
+                  // Eagerly schedule the next animation callback at the beginning of the
+                  // frame. If the scheduler queue is not empty at the end of the frame, it
+                  // will continue flushing inside that callback. If the queue *is* empty,
+                  // then it will exit immediately. Posting the callback at the start of the
+                  // frame ensures it's fired within the earliest possible frame. If we
+                  // waited until the end of the frame to post the callback, we risk the
+                  // browser skipping a frame and not firing the callback until the frame
+                  // after that.
+                  requestAnimationFrameWithTimeout(animationTick);
+                } else {
+                  // No pending work. Exit.
+                  isAnimationFrameScheduled = false;
+                  return;
+                }
+
+                var nextFrameTime = rafTime - frameDeadline + activeFrameTime;
+
+                if (nextFrameTime < activeFrameTime && previousFrameTime < activeFrameTime) {
+                  if (nextFrameTime < 8) {
+                    // Defensive coding. We don't support higher frame rates than 120hz.
+                    // If the calculated frame time gets lower than 8, it is probably a bug.
+                    nextFrameTime = 8;
+                  } // If one frame goes long, then the next one can be short to catch up.
+                  // If two frames are short in a row, then that's an indication that we
+                  // actually have a higher frame rate than what we're currently optimizing.
+                  // We adjust our heuristic dynamically accordingly. For example, if we're
+                  // running on 120hz display or 90hz VR display.
+                  // Take the max of the two in case one of them was an anomaly due to
+                  // missed frame deadlines.
+
+                  activeFrameTime = nextFrameTime < previousFrameTime ? previousFrameTime : nextFrameTime;
+                } else {
+                  previousFrameTime = nextFrameTime;
+                }
+
+                frameDeadline = rafTime + activeFrameTime;
+
+                if (!isMessageEventScheduled) {
+                  isMessageEventScheduled = true;
+                  window.postMessage(messageKey, '*');
+                }
+              }
+              ```
+
 - batchUpdates
-- reactScheduleWork
-- performWork
-- renderRoot
+
+  > 常见的一个问题是 setState 是同步还是异步
+
+  - 触发 react 更新的方式
+    - render
+    - setState
+    - forceupdate
+    - hooks Api(待验证)
+  - 以 setState 为例
+
+    - React 封装事件
+
+    ```js
+    function dispatchEvent(topLevelType, nativeEvent) {
+      if (!_enabled) {
+        return;
+      }
+
+      var nativeEventTarget = getEventTarget(nativeEvent);
+      var targetInst = getClosestInstanceFromNode(nativeEventTarget);
+
+      if (targetInst !== null && typeof targetInst.tag === 'number' && !isFiberMounted(targetInst)) {
+        // If we get an event (ex: img onload) before committing that
+        // component's mount, ignore it for now (that is, treat it as if it was an
+        // event on a non-React tree). We might also consider queueing events and
+        // dispatching them after the mount.
+        targetInst = null;
+      }
+
+      var bookKeeping = getTopLevelCallbackBookKeeping(topLevelType, nativeEvent, targetInst);
+
+      try {
+        // Event queue being processed in the same cycle allows
+        // `preventDefault`.
+        batchedUpdates(handleTopLevel, bookKeeping);
+      } finally {
+        releaseTopLevelCallbackBookKeeping(bookKeeping);
+      }
+    }
+    ```
+
+    - 批量更新将全局变量设置为 true
+
+    ```js
+    function batchedUpdates(fn, bookkeeping) {
+      if (isBatching) {
+        // If we are currently inside another batch, we need to wait until it
+        // fully completes before restoring state.
+        return fn(bookkeeping);
+      }
+
+      isBatching = true;
+
+      try {
+        return _batchedUpdatesImpl(fn, bookkeeping);
+      } finally {
+        // Here we wait until all updates have propagated, which is important
+        // when using controlled components within layers:
+        // https://github.com/facebook/react/issues/1698
+        // Then we restore state of any controlled component.
+        isBatching = false;
+        var controlledComponentsHavePendingUpdates = needsStateRestore();
+
+        if (controlledComponentsHavePendingUpdates) {
+          // If a controlled event was fired, we may need to restore the state of
+          // the DOM node back to the controlled value. This is necessary when React
+          // bails out of the update without touching the DOM.
+          _flushInteractiveUpdatesImpl();
+
+          restoreStateIfNeeded();
+        }
+      }
+    }
+    ```
+
+    - 又因所有的更新都通过 requestWork 请求调度，当 isBatchingUpdates 为 true 时直接 return,不在进行调度，因此不会更新
 
 ## 各类组件 update
 
