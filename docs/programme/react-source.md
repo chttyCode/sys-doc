@@ -690,7 +690,152 @@
             - 获取当前时间，对比 frameDeadline，查看是否已经超时了
             - 如果超时了，判断一下任务 callback 的过期时间有没有到，如果没有到，则重新对这个 callback 进行一次调度，然后返回。如果到了，则设置 didTimeout 为 true
             - 接下去就是调用 callback 了，这里设置 isFlushingHostCallback 全局变量为 true 代表正在执行。并且调用 callback 也就是 flushWork 并传入 didTimeout
+            - 进入 flushWork 调用
 
+              ```js
+              function flushWork(didTimeout) {
+                isExecutingCallback = true;
+                deadlineObject.didTimeout = didTimeout;
+
+                try {
+                  if (didTimeout) {
+                    // Flush all the expired callbacks without yielding.
+                    while (firstCallbackNode !== null) {
+                      // Read the current time. Flush all the callbacks that expire at or
+                      // earlier than that time. Then read the current time again and repeat.
+                      // This optimizes for as few performance.now calls as possible.
+                      var currentTime = exports.unstable_now();
+
+                      if (firstCallbackNode.expirationTime <= currentTime) {
+                        do {
+                          flushFirstCallback();
+                        } while (firstCallbackNode !== null && firstCallbackNode.expirationTime <= currentTime);
+
+                        continue;
+                      }
+
+                      break;
+                    }
+                  } else {
+                    // Keep flushing callbacks until we run out of time in the frame.
+                    if (firstCallbackNode !== null) {
+                      do {
+                        flushFirstCallback();
+                      } while (firstCallbackNode !== null && getFrameDeadline() - exports.unstable_now() > 0);
+                    }
+                  }
+                } finally {
+                  isExecutingCallback = false;
+
+                  if (firstCallbackNode !== null) {
+                    // There's still work remaining. Request another callback.
+                    ensureHostCallbackIsScheduled();
+                  } else {
+                    isHostCallbackScheduled = false;
+                  } // Before exiting, flush all the immediate work that was scheduled.
+
+                  flushImmediateWork();
+                }
+              }
+              ```
+
+              - 先设置 isExecutingCallback 为 true，代表正在调用 callback
+              - 设置 deadlineObject.didTimeout，在 React 业务中可以用来判断任务是否超时
+              - 如果超时，会一次从 firstCallbackNode 向后一直执行，直到第一个没过期的任务
+              - 如果没有超时，则依此执行第一个 callback，知道帧时间结束为止
+              - 最后清理变量，如果任务没有执行完，则再次调用 ensureHostCallbackIsScheduled 进入调度顺便把 Immedia 优先级的任务都调用一遍。
+              - flushFirstCallback
+
+                ```js
+                function flushFirstCallback() {
+                  var flushedNode = firstCallbackNode; // Remove the node from the list before calling the callback. That way the
+                  // list is in a consistent state even if the callback throws.
+
+                  var next = firstCallbackNode.next;
+
+                  if (firstCallbackNode === next) {
+                    // This is the last callback in the list.
+                    firstCallbackNode = null;
+                    next = null;
+                  } else {
+                    var lastCallbackNode = firstCallbackNode.previous;
+                    firstCallbackNode = lastCallbackNode.next = next;
+                    next.previous = lastCallbackNode;
+                  }
+
+                  flushedNode.next = flushedNode.previous = null; // Now it's safe to call the callback.
+
+                  var callback = flushedNode.callback;
+                  var expirationTime = flushedNode.expirationTime;
+                  var priorityLevel = flushedNode.priorityLevel;
+                  var previousPriorityLevel = currentPriorityLevel;
+                  var previousExpirationTime = currentExpirationTime;
+                  currentPriorityLevel = priorityLevel;
+                  currentExpirationTime = expirationTime;
+                  var continuationCallback;
+
+                  try {
+                    continuationCallback = callback(deadlineObject);
+                  } finally {
+                    currentPriorityLevel = previousPriorityLevel;
+                    currentExpirationTime = previousExpirationTime;
+                  } // A callback may return a continuation. The continuation should be scheduled
+                  // with the same priority and expiration as the just-finished callback.
+
+                  if (typeof continuationCallback === 'function') {
+                    var continuationNode = {
+                      callback: continuationCallback,
+                      priorityLevel: priorityLevel,
+                      expirationTime: expirationTime,
+                      next: null,
+                      previous: null,
+                    }; // Insert the new callback into the list, sorted by its expiration. This is
+                    // almost the same as the code in `scheduleCallback`, except the callback
+                    // is inserted into the list *before* callbacks of equal expiration instead
+                    // of after.
+
+                    if (firstCallbackNode === null) {
+                      // This is the first callback in the list.
+                      firstCallbackNode = continuationNode.next = continuationNode.previous = continuationNode;
+                    } else {
+                      var nextAfterContinuation = null;
+                      var node = firstCallbackNode;
+
+                      do {
+                        if (node.expirationTime >= expirationTime) {
+                          // This callback expires at or after the continuation. We will insert
+                          // the continuation *before* this callback.
+                          nextAfterContinuation = node;
+                          break;
+                        }
+
+                        node = node.next;
+                      } while (node !== firstCallbackNode);
+
+                      if (nextAfterContinuation === null) {
+                        // No equal or lower priority callback was found, which means the new
+                        // callback is the lowest priority callback in the list.
+                        nextAfterContinuation = firstCallbackNode;
+                      } else if (nextAfterContinuation === firstCallbackNode) {
+                        // The new callback is the highest priority callback in the list.
+                        firstCallbackNode = continuationNode;
+                        ensureHostCallbackIsScheduled();
+                      }
+
+                      var previous = nextAfterContinuation.previous;
+                      previous.next = nextAfterContinuation.previous = continuationNode;
+                      continuationNode.next = nextAfterContinuation;
+                      continuationNode.previous = previous;
+                    }
+                  }
+                }
+                ```
+
+                - 如果当前队列中只有一个回调，清空队列
+                - 调用回调并传入 deadline 对象，里面有 timeRemaining 方法通过 frameDeadline - now()来判断是否帧时间已经到了
+                - 如果回调有返回内容，把这个返回加入到回调队列
+
+- performWork
 - batchUpdates
 
   > 常见的一个问题是 setState 是同步还是异步
