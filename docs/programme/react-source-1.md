@@ -1,4 +1,4 @@
-# React 源码阅读
+# React 中的更新
 
 ## 基础
 
@@ -116,7 +116,7 @@
       - key 和 ref 这些特殊信息
       - props 新的属性内容
 
-## React 中的更新
+## render
 
 - react dom render
 
@@ -337,189 +337,90 @@
   - different expiration time
   - react setState forUpdate
 
-## Fiber Scheduler
+## BatchUpdates 批量更新
 
-- scheduleWork
+- batchUpdates
 
-  ```js
-  function scheduleWork(fiber, expirationTime) {
-    var root = scheduleWorkToRoot(fiber, expirationTime);
-    if (
-      !isWorking &&
-      nextRenderExpirationTime !== NoWork &&
-      expirationTime < nextRenderExpirationTime
-    ) {
-      // This is an interruption. (Used for performance tracking.)
-      interruptedBy = fiber;
-      resetStack();
-    }
+  > 常见的一个问题是 setState 是同步还是异步
 
-    markPendingPriorityLevel(root, expirationTime);
+  - 触发 react 更新的方式
+    - render
+    - setState
+    - forceupdate
+    - hooks Api(待验证)
+  - 以 setState 为例
 
-    if (
-      // If we're in the render phase, we don't need to schedule this root
-      // for an update, because we'll do it before we exit...
-      !isWorking ||
-      isCommitting$1 || // ...unless this is a different root than the one we're rendering.
-      nextRoot !== root
-    ) {
-      var rootExpirationTime = root.expirationTime;
-      requestWork(root, rootExpirationTime);
-    }
-  }
-  ```
-
-  - 调用 scheduleWorkToRoot 目的
-
-    - 找到当前 Fiber 的 root
-    - 给更新节点的父节点链上的每个节点的 expirationTime 设置为这个 update 的 expirationTime，除非他本身时间要小于 expirationTime
-    - 给更新节点的父节点链上的每个节点的 childExpirationTime 设置为这个 update 的 expirationTime，除非他本身时间要小于 expirationTime
-    - 最终返回 root 节点的 Fiber 对象即 fiberRoot
-
-      ```js
-      function scheduleWorkToRoot(fiber, expirationTime) {
-        // Update the source fiber's expiration time
-
-        if (fiber.expirationTime === NoWork || fiber.expirationTime > expirationTime) {
-          fiber.expirationTime = expirationTime;
-        }
-
-        var alternate = fiber.alternate;
-
-        if (alternate !== null && (alternate.expirationTime === NoWork || alternate.expirationTime > expirationTime)) {
-          alternate.expirationTime = expirationTime;
-        } // Walk the parent path to the root and update the child expiration time.
-
-        var node = fiber.return;
-        var root = null;
-
-        if (node === null && fiber.tag === HostRoot) {
-          root = fiber.stateNode;
-        } else {
-          while (node !== null) {
-            alternate = node.alternate;
-
-            if (node.childExpirationTime === NoWork || node.childExpirationTime > expirationTime) {
-              node.childExpirationTime = expirationTime;
-
-              if (
-                alternate !== null &&
-                (alternate.childExpirationTime === NoWork || alternate.childExpirationTime > expirationTime)
-              ) {
-                alternate.childExpirationTime = expirationTime;
-              }
-            } else if (
-              alternate !== null &&
-              (alternate.childExpirationTime === NoWork || alternate.childExpirationTime > expirationTime)
-            ) {
-              alternate.childExpirationTime = expirationTime;
-            }
-
-            if (node.return === null && node.tag === HostRoot) {
-              root = node.stateNode;
-              break;
-            }
-
-            node = node.return;
-          }
-        }
-          return null;
-        }
-
-        return root;
-      }
-      ```
-
-  - 判断是否有任务被打断，如果有需要将其重置
-  - 更新各种 expirationTime
-  - 如果是 !isWorking || isCommitting 开始调用 requestWork
-
-- requestWork
-
-  ```js
-  function requestWork(root: FiberRoot, expirationTime: ExpirationTime) {
-    addRootToSchedule(root, expirationTime);
-    if (isRendering) {
-      // Prevent reentrancy. Remaining work will be scheduled at the end of
-      // the currently rendering batch.
-      return;
-    }
-
-    if (isBatchingUpdates) {
-      // Flush work at the end of the batch.
-      if (isUnbatchingUpdates) {
-        nextFlushedRoot = root;
-        nextFlushedExpirationTime = Sync;
-        performWorkOnRoot(root, Sync, true);
-      }
-      return;
-    }
-
-    if (expirationTime === Sync) {
-      performSyncWork();
-    } else {
-      scheduleCallbackWithExpirationTime(root, expirationTime);
-    }
-  }
-  ```
-
-  - addRootToSchedule 把 root 加入到调度队列，但是要注意一点，不会存在两个相同的 root 前后出现在队列中
+    - React 封装事件
 
     ```js
-    function addRootToSchedule(root, expirationTime) {
-      // Add the root to the schedule.
-      // Check if this root is already part of the schedule.
-      if (root.nextScheduledRoot === null) {
-        // This root is not already scheduled. Add it.
-        root.expirationTime = expirationTime;
+    function dispatchEvent(topLevelType, nativeEvent) {
+      if (!_enabled) {
+        return;
+      }
 
-        if (lastScheduledRoot === null) {
-          firstScheduledRoot = lastScheduledRoot = root;
-          root.nextScheduledRoot = root;
-        } else {
-          lastScheduledRoot.nextScheduledRoot = root;
-          lastScheduledRoot = root;
-          lastScheduledRoot.nextScheduledRoot = firstScheduledRoot;
-        }
-      } else {
-        // This root is already scheduled, but its priority may have increased.
-        var remainingExpirationTime = root.expirationTime;
+      var nativeEventTarget = getEventTarget(nativeEvent);
+      var targetInst = getClosestInstanceFromNode(nativeEventTarget);
 
-        if (
-          remainingExpirationTime === NoWork ||
-          expirationTime < remainingExpirationTime
-        ) {
-          // Update the priority.
-          root.expirationTime = expirationTime;
+      if (
+        targetInst !== null &&
+        typeof targetInst.tag === "number" &&
+        !isFiberMounted(targetInst)
+      ) {
+        // If we get an event (ex: img onload) before committing that
+        // component's mount, ignore it for now (that is, treat it as if it was an
+        // event on a non-React tree). We might also consider queueing events and
+        // dispatching them after the mount.
+        targetInst = null;
+      }
+
+      var bookKeeping = getTopLevelCallbackBookKeeping(
+        topLevelType,
+        nativeEvent,
+        targetInst
+      );
+
+      try {
+        // Event queue being processed in the same cycle allows
+        // `preventDefault`.
+        batchedUpdates(handleTopLevel, bookKeeping);
+      } finally {
+        releaseTopLevelCallbackBookKeeping(bookKeeping);
+      }
+    }
+    ```
+
+    - 批量更新将全局变量设置为 true
+
+    ```js
+    function batchedUpdates(fn, bookkeeping) {
+      if (isBatching) {
+        // If we are currently inside another batch, we need to wait until it
+        // fully completes before restoring state.
+        return fn(bookkeeping);
+      }
+
+      isBatching = true;
+
+      try {
+        return _batchedUpdatesImpl(fn, bookkeeping);
+      } finally {
+        // Here we wait until all updates have propagated, which is important
+        // when using controlled components within layers:
+        // https://github.com/facebook/react/issues/1698
+        // Then we restore state of any controlled component.
+        isBatching = false;
+        var controlledComponentsHavePendingUpdates = needsStateRestore();
+
+        if (controlledComponentsHavePendingUpdates) {
+          // If a controlled event was fired, we may need to restore the state of
+          // the DOM node back to the controlled value. This is necessary when React
+          // bails out of the update without touching the DOM.
+          _flushInteractiveUpdatesImpl();
+
+          restoreStateIfNeeded();
         }
       }
     }
     ```
 
-    - 可以看出来，如果第一次调用 addRootToSchedule 的时候，nextScheduledRoot 是 null，这时候公共变量 firstScheduledRoot 和 lastScheduledRoot 也是 null，所以会把他们都赋值成 root，同时 root.nextScheduledRoot = root
-    - 然后第二次进来的时候，如果前后 root 是同一个，那么之前的 firstScheduledRoot 和 lastScheduledRoot 都是 root，所以 lastScheduledRoot.nextScheduledRoot = root 就等于 root.nextScheduledRoot = root
-    - 这么做是因为同一个 root 不需要存在两个，因为前一次调度如果中途被打断，下一次调度进入还是从同一个 root 开始，就会把新的任务一起执行了。
-
-  - 之后根据 expirationTime 调用 performSyncWork 还是 scheduleCallbackWithExpirationTime
-
-- batchUpdates
-  - 批量更新
-  - handler Click
-- reactScheduleWork
-  - 维护时间片
-  - 模拟 requestIdleCallback
-  - 调度列表和超时判断
-- performWork
-- renderRoot
-
-## 各类组件 update
-
-## 完成节点任务
-
-## commitRoot
-
-## 功能详解：基础
-
-## suspense and priority
-
-## 功能详解：hooks
+    - 又因所有的更新都通过 requestWork 请求调度，当 isBatchingUpdates 为 true 时直接 return,不在进行调度，因此不会更新

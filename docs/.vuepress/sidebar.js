@@ -33,7 +33,16 @@ module.exports = {
       children: [
         "/programme/react",
         "/programme/react-simple",
-        "/programme/react-source",
+        {
+          title: "React源码解读",
+          collapsable: true,
+          children: [
+            "/programme/react-source",
+            "/programme/react-source-1",
+            "/programme/react-source-2",
+            "/programme/react-source-3",
+          ],
+        },
       ],
     },
     ["browser", "浏览器"],
