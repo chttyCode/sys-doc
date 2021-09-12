@@ -8,8 +8,14 @@ module.exports = {
       collapsable: true,
       children: [
         "/programme/javascript",
-        "/programme/javascript-red-17",
-        "/programme/javascript-red-18",
+        {
+          title: "小红书",
+          collapsable: true,
+          children: [
+            ["/programme/javascript-red-17", "第十七章"],
+            ["/programme/javascript-red-18", "第十八章"],
+          ],
+        },
       ],
     },
     {
@@ -32,9 +38,10 @@ module.exports = {
       collapsable: true,
       children: [
         "/programme/react",
-        "/programme/react-simple",
+        ["/programme/react-statue", "状态管理"],
+        ["/programme/react-simple", "简版实现"],
         {
-          title: "React源码解读",
+          title: "源码解读",
           collapsable: true,
           children: [
             "/programme/react-source",
