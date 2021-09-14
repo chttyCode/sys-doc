@@ -159,7 +159,32 @@ function bfs(graph, start, end) {
 
 ## 8. 贪心算法
 
+- 贪心
+  - 在每一步选择中都采取在当前状态下最好或最优解的选择，从而希望导致结果是全局最好或最优解
+- vs 回溯
+  - 能够回退
+- vs 动态规划
+  - 最优判断+回退
+
 ## 9. 二分查找
+
+- 前提
+  - 目标函数单调性
+  - 存在上下边界
+  - 能够通过索引访问
+
+```js
+  left,right=0,len(array)-1
+  while left<=right
+    mid = (left+right)/2
+    if(array[mid] === target){
+      break or return result
+    }else if(array[mid]<target){
+      left=mid+1
+    }else{
+      right=mid+1
+    }
+```
 
 ## 10. 动态规划
 
