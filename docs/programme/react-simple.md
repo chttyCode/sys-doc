@@ -273,4 +273,4 @@
     ```
 
 - 渲染流程图
-  ![alt 流程](/imgs/simpleReact.svg)
+  ![alt 流程](/sys-doc/imgs/simpleReact.svg)

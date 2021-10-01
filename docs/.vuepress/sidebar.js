@@ -53,6 +53,11 @@ module.exports = {
       ],
     },
     ["browser", "浏览器"],
+    {
+      title: "设计模式",
+      collapsable: true,
+      children: ["/programme/design-uml", "/programme/design"],
+    },
   ],
   "/engineer/": [
     ["", "工程"],
