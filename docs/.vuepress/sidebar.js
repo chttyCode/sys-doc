@@ -1,7 +1,8 @@
 module.exports = {
   "/programme/": [
     ["", "编程"],
-    ["git", "git操作"],
+    ["git", "git"],
+    ["vscode", "vscode"],
     ["typescript", "Typescript"],
     {
       title: "Javascript",
