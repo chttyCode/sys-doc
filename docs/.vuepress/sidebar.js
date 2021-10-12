@@ -57,7 +57,11 @@ module.exports = {
     {
       title: "设计模式",
       collapsable: true,
-      children: ["/programme/design-uml", "/programme/design"],
+      children: [
+        "/programme/design-uml",
+        "/programme/design",
+        "/programme/design-word",
+      ],
     },
   ],
   "/engineer/": [
