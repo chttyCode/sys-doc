@@ -95,9 +95,7 @@ html { filter: invert(1); }
 
   > [stackoverflow](https://stackoverflow.com/questions/2517190/how-do-i-force-git-to-use-lf-instead-of-crlf-under-windows/13154031#13154031)
 
-### typescript 非空断言
-
-### Angular 组件继承
+## Angular 组件继承
 
 - 公共类需要添加@Decorator
   - 父类定义的 input，子类校验不通过
@@ -185,13 +183,6 @@ html { filter: invert(1); }
             ],
         })
         export class UserFormComponent extends EntityFormComponent {
-
-            /**
-            * The base-class constructor is overridden to set `entityType`. If I hadn't
-            * needed to initialize anything like that in the constructor, I would have
-            * skipped the constructor in this class altogether because the base-class
-            * constructor would have been enough.
-            */
             constructor(
                 entityServices: SomeEntityServicesMasterService,
                 route: ActivatedRoute,
@@ -213,3 +204,7 @@ html { filter: invert(1); }
           - 我们必须注入相同的依赖项集，并将它们以相同的顺序通过 super()传递给父组件
         - 生命周期
           - 子类覆盖父类，需要执行父类生命周期是需要通过 super 执行
+      - 参考
+      > [Angular — Maintenance issue caused by component inheritance](https://lukeliutingchun.medium.com/angular-maintenance-issue-caused-by-component-inheritance-61fe4af85163)
+      > 
+      > [How to inherit a component in Angular and reuse its template](https://medium.com/acute-angular/how-to-inherit-a-component-in-angular-and-reuse-its-template-88b9cbb4b55)
