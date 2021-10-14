@@ -103,21 +103,22 @@
                }
             }
          }
-         const fruit = new Factory('origin');
+         const fruit = new Factory('orange');
       ```
 
     - 迭代出其他产品时，Factory 需要不断的新增 if...else 分支
-    - 错误
+    - 缺点
       - 1: Factory 不应该依赖于底层的 Orange 或者 Apple class,应该依赖于接口 fruitModal
 
     ```js
      class Factory {
         constructor(public type: fruitModal) {}
      }
-     const fruit = new Factory('origin');
+     const fruit = new Factory(new Orange('sweet'));
     ```
 
-    - 即高低层次模块都依赖于接口
-    - 实现依赖接口
-      > 先声明定义依赖，在使用的时候传入具体依赖类，即理解为依赖反转或者倒置
+    - 总结
+      - 即高低层次模块都依赖于接口
+      - 实现依赖接口
+        > 先声明定义依赖，在使用的时候传入具体依赖类，即理解为依赖反转或者倒置
 - 设计模式
