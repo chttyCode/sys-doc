@@ -63,4 +63,61 @@
     - 保持子类的开放性和灵活性，可以重写父类中的方法
 
 - 设计原则
+
+  | 首字母 | 指代         | 概念                                                                                          |
+  | ------ | ------------ | --------------------------------------------------------------------------------------------- |
+  | S      | 单一职责原则 | 单一功能原则认为对象应该仅具有一种单一功能的概念                                              |
+  | O      | 开放封闭原则 | 开闭原则认为软件体应该是对于扩展开放的，但是对于修改封闭的的概念                              |
+  | L      | 里氏替换原则 | 里氏替换原则认为程序中的对象应该是可以在不改变程序正确性的前提下被它的子类所替换的的概念      |
+  | I      | 接口隔离原则 | 接口隔离原则认为多个特定客户端接口要好于一个宽泛用途的接口的概念                              |
+  | D      | 依赖反转原则 | 依赖反转原则认为一个方法应该遵从依赖于抽象而不是一个实例的概念,依赖注入是该原则的一种实现方式 |
+
+  - 依赖反转原则(依赖倒置)
+
+    - 高层次的模块不应该依赖于低层次的模块，两者都应该依赖于抽象接口。
+    - 抽象接口不应该依赖于具体实现。而具体实现则应该依赖于抽象接口。
+
+      ```js
+         interface fruitModal {
+            taste: string;
+            grow: () => string;
+         }
+         class Orange implements fruitModal {
+            constructor(public taste: string) {}
+            grow() {
+               return '淮南';
+            }
+         }
+         class Apple implements fruitModal {
+            constructor(public taste: string) {}
+            grow() {
+               return '热带';
+            }
+         }
+         class Factory {
+            constructor(type) {
+               if (type === 'orange') {
+                  return new Orange('甜');
+               } else if (type === 'Banana') {
+                  return new Apple('酸');
+               }
+            }
+         }
+         const fruit = new Factory('origin');
+      ```
+
+    - 迭代出其他产品时，Factory 需要不断的新增 if...else 分支
+    - 错误
+      - 1: Factory 不应该依赖于底层的 Orange 或者 Apple class,应该依赖于接口 fruitModal
+
+    ```js
+     class Factory {
+        constructor(public type: fruitModal) {}
+     }
+     const fruit = new Factory('origin');
+    ```
+
+    - 即高低层次模块都依赖于接口
+    - 实现依赖接口
+      > 先声明定义依赖，在使用的时候传入具体依赖类，即理解为依赖反转或者倒置
 - 设计模式
