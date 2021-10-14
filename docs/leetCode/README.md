@@ -6,6 +6,24 @@ sidebarDepth: 1
 
 ## 1. 数组、链表
 
+- 数组
+  | operate | complex |
+  | ---- | ---- |
+  | pre-pend | O(1) |
+  | append | O(1) |
+  | lookup | O(1) |
+  | insert | O(n) |
+  | delete | O(n) |
+
+- 链表
+  | operate | complex |
+  | ---- | ---- |
+  | pre-pend | O(1) |
+  | append | O(1) |
+  | lookup | O(n) |
+  | insert | O(1) |
+  | delete | O(1) |
+
 ## 2. 队列、栈、双端队列
 
 ## 3. hash 表、映射、集合
