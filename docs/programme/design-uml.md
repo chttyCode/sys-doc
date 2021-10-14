@@ -71,19 +71,19 @@
 
       - 只要在类中用到了对方，那么它们之间就存在依赖关系，如果没有对方，连编译都通过不了，通常表现为属性
 
-      ![用例图](/sys-doc/imgs/unl依赖.svg)
+      ![依赖](/sys-doc/imgs/unl依赖.svg)
 
     - 泛化
 
       - 泛化关系实际上就是继承关系，他就是依赖关系的特例
 
-      ![用例图](/sys-doc/imgs/uml泛化.svg)
+      ![泛化](/sys-doc/imgs/uml泛化.svg)
 
     - 实现关系
 
       - 定义实现接口
 
-      ![用例图](/sys-doc/imgs/uml实现.svg)
+      ![实现](/sys-doc/imgs/uml实现.svg)
 
     - 关联关系
 
@@ -97,7 +97,7 @@
         - n..m 表示 n 到 m 个都可以
         - m... 表示至少 m 个
 
-      ![用例图](/sys-doc/imgs/imgs/uml实现.svg)
+      ![关联关系](/sys-doc/imgs/uml关联.svg)
 
     - 聚合
 
@@ -105,14 +105,14 @@
       - 聚合关系是关联关系的特例，所有它具有关联的导向性和多重性
       - 聚合的双方生命周期是独立的
 
-      ![用例图](/sys-doc/imgs/uml聚合.svg)
+      ![聚合](/sys-doc/imgs/uml聚合.svg)
 
     - 组合
 
       - 也是整体和部分的关系，但是整理和部分不可分开
       - 整体和部分生命周期一致
 
-      ![用例图](/sys-doc/imgs/uml组合.svg)
+      ![组合](/sys-doc/imgs/uml组合.svg)
 
 - 活动图
 - 时序图
