@@ -784,5 +784,91 @@
   }
   ```
 
+- 创建上下文 context
+
+  - 创建上线文 API
+
+  ```js
+  function createContext() {
+    let context = { $$typeof: REACT_CONTEXT };
+    context.Provider = {
+      $$typeof: REACT_PROVIDER,
+      _context: context,
+    };
+    context.Consumer = {
+      $$typeof: REACT_CONTEXT,
+      _context: context,
+    };
+    return context;
+  }
+  ```
+
+  - 在 createDom 新增分支，渲染 Provider&Consumer 组件
+
+    ```js
+    if (type && type.$$typeof === REACT_PROVIDER) {
+      return mountProviderComponent(VDom);
+    } else if (type && type.$$typeof === REACT_CONTEXT) {
+      return mountContextComponent(VDom);
+    }
+    ```
+
+  - 渲染 Provider&Consumer
+
+  ```js
+  function mountProviderComponent(VDom) {
+    let { type, props } = VDom;
+    let context = type._context;
+    context._currentValue = props.value;
+    let renderVDom = props.children;
+    VDom.oldRenderVDom = renderVDom;
+    return createDom(renderVDom);
+  }
+  function mountContextComponent(VDom) {
+    let { type, props } = VDom;
+    let context = type._context;
+    let renderVDom = props.children(context._currentValue);
+    VDom.oldRenderVDom = renderVDom;
+    return createDom(renderVDom);
+  }
+  ```
+
+  - update 阶段
+
+    - classComponent
+
+      ```js
+      if (this.constructor.contextType) {
+        this.context = this.constructor.contextType._currentValue;
+      }
+      ```
+
+    - updateElement 时新增分支更新 Provider&Consumer
+
+    ```js
+    if (oldVdom.type.$$typeof === REACT_CONTEXT) {
+      updateContextComponent(oldVdom, newVdom);
+    } else if (oldVdom.type.$$typeof === REACT_PROVIDER) {
+      updateProviderComponent(oldVdom, newVdom);
+    }
+    function updateProviderComponent(oldVDom, newVDom) {
+      let parentDOM = findDOM(oldVDom).parentNode;
+      let { type, props } = newVDom;
+      let context = type._context;
+      context._currentValue = props.value;
+      let renderVDom = props.children;
+      compareTwoVDom(parentDOM, renderVDom.oldRenderVDom, renderVDom);
+      newVDom.oldRenderVDom = renderVDom;
+    }
+    function updateContextComponent(oldVDom, newVDom) {
+      let parentDOM = findDOM(oldVDom).parentNode;
+      let { type, props } = newVDom;
+      let context = type._context;
+      let renderVDom = props.children(context._currentValue);
+      compareTwoVDom(parentDOM, oldVDom.oldRenderVDom, renderVDom);
+      newVDom.oldRenderVDom = renderVDom;
+    }
+    ```
+
 - 渲染流程图
   ![alt 流程](/sys-doc/imgs/simpleReact.svg)
