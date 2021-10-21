@@ -121,4 +121,23 @@
       - 即高低层次模块都依赖于接口
       - 实现依赖接口
         > 先声明定义依赖，在使用的时候传入具体依赖类，即理解为依赖反转或者倒置
+
 - 设计模式
+  - 创建型
+    - 工厂模式
+      > 一个类创造一种实例
+      ```js
+      var uninitializedFiber = createHostRootFiber(isConcurrent);
+      function createHostRootFiber() {
+        return new Fiber();
+      }
+      // 创造fiber 实例
+      function Fiber() {
+        return {
+          current: null,
+        };
+      }
+      ```
+    - 工厂方法模式
+  - 结构型
+  - 行为型
