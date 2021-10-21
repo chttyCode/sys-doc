@@ -1,13 +1,16 @@
-# React 简易实现
+# React 简码
 
 - 根据原生框架，体验框架的渲染流程
 
   - 目前版本 jsx 转化会自动插入
     ```js
     // automatic
-    var _jsxRuntime = require('react/jsx-runtime');
+    var _jsxRuntime = require("react/jsx-runtime");
     //vs classic
-    _reactDom.default.render(/*#__PURE__*/ _react.default.createElement(App, null), document.getElementById('root'));
+    _reactDom.default.render(
+      /*#__PURE__*/ _react.default.createElement(App, null),
+      document.getElementById("root")
+    );
     ```
     - 因为需要实现 createElement，通过设置，可以使用 classic 创建 ReactElement
       ```js
@@ -44,9 +47,9 @@
   - 特殊属性会被过滤，不会通过 props 传递
   - 对文本节点进行保证，统一 ReactElement 结构
     ```js
-    export const REACT_TEXT = Symbol('REACT_TEXT');
+    export const REACT_TEXT = Symbol("REACT_TEXT");
     function wrapToVDom(element) {
-      return typeof element === 'string' || typeof element === 'number'
+      return typeof element === "string" || typeof element === "number"
         ? { type: REACT_TEXT, props: { content: element } }
         : element;
     }
@@ -85,7 +88,7 @@
       let dom;
       if (type === REACT_TEXT) {
         dom = document.createTextNode(props.content);
-      } else if (typeof type === 'function') {
+      } else if (typeof type === "function") {
         if (type.isClassComponent) {
           return mountClassComponent(VDom);
         } else {
@@ -96,7 +99,7 @@
       }
       if (props) {
         updateProps(dom, props);
-        if (typeof props.children == 'object' && props.children.type) {
+        if (typeof props.children == "object" && props.children.type) {
           mount(props.children, dom);
         } else if (Array.isArray(props.children)) {
           reconcileChildren(props.children, dom);
@@ -148,9 +151,9 @@
       ```js
       function updateProps(dom, oldProps = {}, newProps = {}) {
         for (let key in newProps) {
-          if (key === 'children') {
+          if (key === "children") {
             continue;
-          } else if (key === 'style') {
+          } else if (key === "style") {
             let styleObj = newProps[key];
             for (let attr in styleObj) {
               dom.style[attr] = styleObj[attr];
@@ -170,7 +173,7 @@
     - 更新 Dom 的 children
       ```js
       function reconcileChildren(childrenVDom, parentDOM) {
-        for (let i = 0; i < childrenVDom.length; i++) {
+        for (let i = 0; i < childrenVDom.length; i) {
           let childVDom = childrenVDom[i];
           mount(childVDom, parentDOM);
         }
@@ -214,7 +217,7 @@
       }
       addState(partialState, callback) {
         this.pendingStates.push(partialState); ///等待更新的或者说等待生效的状态
-        if (typeof callback === 'function') this.callbacks.push(callback); //状态更新后的回调
+        if (typeof callback === "function") this.callbacks.push(callback); //状态更新后的回调
         this.emitUpdate();
       }
       emitUpdate(nextProps?) {
@@ -233,7 +236,7 @@
         let { state } = classInstance;
         pendingStates.forEach((nextState) => {
           //如果pendingState是一个函数的话，传入老状态，返回新状态，再进行合并
-          if (typeof nextState === 'function') {
+          if (typeof nextState === "function") {
             nextState = nextState(state);
           }
           state = { ...state, ...nextState };
@@ -253,7 +256,7 @@
     function findDOM(VDom) {
       let { type } = VDom;
       let dom;
-      if (typeof type === 'function') {
+      if (typeof type === "function") {
         dom = findDOM(VDom.oldRenderVDom);
       } else {
         dom = VDom.dom;
@@ -378,14 +381,14 @@
     ```js
     function updateProps(dom, oldProps = {}, newProps = {}) {
       for (let key in newProps) {
-        if (key === 'children') {
+        if (key === "children") {
           continue;
-        } else if (key === 'style') {
+        } else if (key === "style") {
           let styleObj = newProps[key];
           for (let attr in styleObj) {
             dom.style[attr] = styleObj[attr];
           }
-        } else if (key.startsWith('on')) {
+        } else if (key.startsWith("on")) {
           addEvent(dom, key.toLocaleLowerCase(), newProps[key]);
         } else {
           dom[key] = newProps[key];
@@ -409,13 +412,13 @@
     - 转发 Ref 就是将 ref 通过组件传递给子组件
   - 定义 Ref 标识
     ```js
-    export const REACT_FORWARD_REF_TYPE = Symbol('react.forward_ref');
+    export const REACT_FORWARD_REF_TYPE = Symbol("react.forward_ref");
     ```
   - 创建
     ```js
-    +function createRef() {
+    function createRef() {
       return { current: null };
-    };
+    }
     function forwardRef(render) {
       var elementType = {
         $$typeof: REACT_FORWARD_REF_TYPE,
@@ -433,7 +436,7 @@
         return mountForwardComponent(vDom);
       } else if (type === REACT_TEXT) {
         dom = document.createTextNode(props.content);
-      } else if (typeof type === 'function') {
+      } else if (typeof type === "function") {
         if (type.isReactComponent) {
           return mountClassComponent(vDom);
         } else {
@@ -444,7 +447,7 @@
       }
       if (props) {
         updateProps(dom, {}, props);
-        if (typeof props.children == 'object' && props.children.type) {
+        if (typeof props.children == "object" && props.children.type) {
           mount(props.children, dom);
         } else if (Array.isArray(props.children)) {
           reconcileChildren(props.children, dom);
@@ -485,7 +488,10 @@
       ```js
       function shouldUpdate(classInstance, nextProps, nextState) {
         let willUpdate = true;
-        if (classInstance.shouldComponentUpdate && !classInstance.shouldComponentUpdate(nextProps, nextState)) {
+        if (
+          classInstance.shouldComponentUpdate &&
+          !classInstance.shouldComponentUpdate(nextProps, nextState)
+        ) {
           willUpdate = false;
         }
         if (willUpdate && classInstance.componentWillUpdate) {
@@ -518,12 +524,15 @@
         let { type, props, ref } = vDom;
         let classInstance = new type(props);
         if (ref) ref.current = classInstance;
-        if (classInstance.componentWillMount) classInstance.componentWillMount();
+        if (classInstance.componentWillMount)
+          classInstance.componentWillMount();
         let renderVDom = classInstance.render();
         classInstance.oldRenderVDom = renderVDom;
         let dom = createDOM(renderVDom);
         if (classInstance.componentDidMount)
-          dom.componentDidMount = classInstance.componentDidMount.bind(classInstance);
+          dom.componentDidMount = classInstance.componentDidMount.bind(
+            classInstance
+          );
         return dom;
       }
       ```
@@ -538,12 +547,15 @@
         let classInstance = new type(props);
         vDom.classInstance = classInstance; // 实例上挂载
         if (ref) ref.current = classInstance;
-        if (classInstance.componentWillMount) classInstance.componentWillMount();
+        if (classInstance.componentWillMount)
+          classInstance.componentWillMount();
         let renderVDom = classInstance.render();
         classInstance.oldRenderVDom = renderVDom;
         let dom = createDOM(renderVDom);
         if (classInstance.componentDidMount)
-          dom.componentDidMount = classInstance.componentDidMount.bind(classInstance);
+          dom.componentDidMount = classInstance.componentDidMount.bind(
+            classInstance
+          );
         return dom;
       }
       ```
@@ -599,7 +611,9 @@
       //如果此虚拟DOM有子节点的话，递归全部删除
       if (props.children) {
         //得到儿子的数组
-        let children = Array.isArray(props.children) ? props.children : [props.children];
+        let children = Array.isArray(props.children)
+          ? props.children
+          : [props.children];
         children.forEach(unMountVDom);
       }
 
@@ -619,12 +633,16 @@
           currentDOM.textContent = newVDom.props.content;
         }
         return;
-      } else if (typeof oldVDom.type === 'string') {
+      } else if (typeof oldVDom.type === "string") {
         // 原生组件
         let currentDOM = (newVDom.dom = findDOM(oldVDom));
         updateProps(currentDOM, oldVDom.props, newVDom.props);
-        updateChildren(currentDOM, oldVDom.props.children, newVDom.props.children);
-      } else if (typeof oldVDom.type === 'function') {
+        updateChildren(
+          currentDOM,
+          oldVDom.props.children,
+          newVDom.props.children
+        );
+      } else if (typeof oldVDom.type === "function") {
         // React组件
         if (oldVDom.type.isClassComponent) {
           // 类组件
@@ -666,12 +684,27 @@
 
     ```js
     function updateChildren(parentDOM, oldVChildren, newVChildren) {
-      oldVChildren = Array.isArray(oldVChildren) ? oldVChildren : oldVChildren ? [oldVChildren] : [];
-      newVChildren = Array.isArray(newVChildren) ? newVChildren : newVChildren ? [newVChildren] : [];
+      oldVChildren = Array.isArray(oldVChildren)
+        ? oldVChildren
+        : oldVChildren
+        ? [oldVChildren]
+        : [];
+      newVChildren = Array.isArray(newVChildren)
+        ? newVChildren
+        : newVChildren
+        ? [newVChildren]
+        : [];
       let maxLength = Math.max(oldVChildren.length, newVChildren.length);
-      for (let i = 0; i < maxLength; i++) {
-        let nextVdom = oldVChildren.find((item, index) => index > i && item && findDOM(item));
-        compareTwoVdom(parentDOM, oldVChildren[i], newVChildren[i], nextVdom && findDOM(nextVdom));
+      for (let i = 0; i < maxLength; i) {
+        let nextVdom = oldVChildren.find(
+          (item, index) => index > i && item && findDOM(item)
+        );
+        compareTwoVdom(
+          parentDOM,
+          oldVChildren[i],
+          newVChildren[i],
+          nextVdom && findDOM(nextVdom)
+        );
       }
     }
     ```
@@ -684,9 +717,9 @@
 
   ```js
   // 定义常量
-  export const REACT_FRAGMENT = Symbol('react.fragment');
-  export const PLACEMENT = 'PLACEMENT';
-  export const MOVE = 'MOVE';
+  export const REACT_FRAGMENT = Symbol("react.fragment");
+  export const PLACEMENT = "PLACEMENT";
+  export const MOVE = "MOVE";
   ```
 
   - updateElement
@@ -699,13 +732,17 @@
         currentDOM.textContent = newVdom.props.content;
       }
       return;
-    } else if (typeof oldVdom.type === 'string') {
+    } else if (typeof oldVdom.type === "string") {
       let currentDOM = (newVdom.dom = findDOM(oldVdom));
       updateProps(currentDOM, oldVdom.props, newVdom.props);
-      updateChildren(currentDOM, oldVdom.props.children, newVdom.props.children);
+      updateChildren(
+        currentDOM,
+        oldVdom.props.children,
+        newVdom.props.children
+      );
     } else if (oldVdom.type === REACT_FRAGMENT) {
       dom = document.createDocumentFragment();
-    } else if (typeof oldVdom.type === 'function') {
+    } else if (typeof oldVdom.type === "function") {
       if (oldVdom.type.isReactComponent) {
         newVdom.classInstance = oldVdom.classInstance;
         updateClassComponent(oldVdom, newVdom);
@@ -720,8 +757,16 @@
 
   ```js
   export function updateChildren(parentDOM, oldVChildren, newVChildren) {
-    oldVChildren = Array.isArray(oldVChildren) ? oldVChildren : oldVChildren ? [oldVChildren] : [];
-    newVChildren = Array.isArray(newVChildren) ? newVChildren : newVChildren ? [newVChildren] : [];
+    oldVChildren = Array.isArray(oldVChildren)
+      ? oldVChildren
+      : oldVChildren
+      ? [oldVChildren]
+      : [];
+    newVChildren = Array.isArray(newVChildren)
+      ? newVChildren
+      : newVChildren
+      ? [newVChildren]
+      : [];
     let keyedOldMap = {};
     let lastPlacedIndex = 0;
     oldVChildren.forEach((oldVChild, index) => {
@@ -753,7 +798,9 @@
         });
       }
     });
-    let moveVChild = patch.filter((action) => action.type === MOVE).map((action) => action.oldVChild);
+    let moveVChild = patch
+      .filter((action) => action.type === MOVE)
+      .map((action) => action.oldVChild);
     Object.values(keyedOldMap)
       .concat(moveVChild)
       .forEach((oldVChild) => {
@@ -784,5 +831,188 @@
   }
   ```
 
-- 渲染流程图
+- hooks
+
+  > 通过全局变量模拟 hooks
+
+  - 设置全局变量
+    ```js
+    let hookStates = [];
+    let hookIndex = 0;
+    let scheduleUpdate;
+    ```
+  - 更新
+
+    ```js
+    function render(vDom, container) {
+      mount(vDom, container);
+      scheduleUpdate = () => {
+        hookIndex = 0;
+        compareTwoVdom(container, vDom, vDom);
+      };
+    }
+    ```
+
+  - API 定义
+
+    - 定义 useState
+
+      ```js
+      export function useState(initialState) {
+        hookStates[hookIndex] = hookStates[hookIndex] || initialState;
+        let currentIndex = hookIndex;
+        function setState(newState) {
+          if (typeof newState === "function")
+            newState = newState(hookStates[currentIndex]);
+          hookStates[currentIndex] = newState;
+          scheduleUpdate();
+        }
+        return [hookStates[hookIndex], setState];
+      }
+      ```
+
+    - 定义 useMemo & useCallback
+
+      ```js
+      export function useMemo(factory, deps) {
+        if (hookStates[hookIndex]) {
+          let [lastMemo, lastDeps] = hookStates[hookIndex];
+          let same = deps.every((item, index) => item === lastDeps[index]);
+          if (same) {
+            hookIndex;
+            return lastMemo;
+          } else {
+            let newMemo = factory();
+            hookStates[hookIndex] = [newMemo, deps];
+            return newMemo;
+          }
+        } else {
+          let newMemo = factory();
+          hookStates[hookIndex] = [newMemo, deps];
+          return newMemo;
+        }
+      }
+      ```
+
+    - 定义 useCallback
+
+      ```js
+      export function useCallback(callback, deps) {
+        if (hookStates[hookIndex]) {
+          let [lastCallback, lastDeps] = hookStates[hookIndex];
+          let same = deps.every((item, index) => item === lastDeps[index]);
+          if (same) {
+            hookIndex;
+            return lastCallback;
+          } else {
+            hookStates[hookIndex] = [callback, deps];
+            return callback;
+          }
+        } else {
+          hookStates[hookIndex] = [callback, deps];
+          return callback;
+        }
+      }
+      ```
+
+    - 定义 useReducer
+
+      ```js
+      export function useReducer(reducer, initialState) {
+        hookStates[hookIndex] = hookStates[hookIndex] || initialState;
+        let currentIndex = hookIndex;
+        function dispatch(action) {
+          hookStates[currentIndex] = reducer
+            ? reducer(hookStates[currentIndex], action)
+            : action;
+          scheduleUpdate();
+        }
+        return [hookStates[hookIndex], dispatch];
+      }
+      ```
+
+    - 定义 useContext
+
+      ```js
+      function useContext(context) {
+        return context._currentValue;
+      }
+      ```
+
+    - 定义 useEffect
+
+      ```js
+      export function useEffect(callback, dependencies) {
+        let currentIndex = hookIndex;
+        if (hookStates[hookIndex]) {
+          let [destroy, lastDeps] = hookStates[hookIndex];
+          let same =
+            dependencies &&
+            dependencies.every((item, index) => item === lastDeps[index]);
+          if (same) {
+            hookIndex;
+          } else {
+            destroy && destroy();
+            setTimeout(() => {
+              hookStates[currentIndex] = [callback(), dependencies];
+            });
+            hookIndex;
+          }
+        } else {
+          setTimeout(() => {
+            hookStates[currentIndex] = [callback(), dependencies];
+          });
+          hookIndex;
+        }
+      }
+      ```
+
+    - 定义 useLayoutEffect
+
+      ```js
+      export function useLayoutEffect(callback, dependencies) {
+        let currentIndex = hookIndex;
+        if (hookStates[hookIndex]) {
+          let [destroy, lastDeps] = hookStates[hookIndex];
+          let same =
+            dependencies &&
+            dependencies.every((item, index) => item === lastDeps[index]);
+          if (same) {
+            hookIndex;
+          } else {
+            destroy && destroy();
+            queueMicrotask(() => {
+              hookStates[currentIndex] = [callback(), dependencies];
+            });
+            hookIndex;
+          }
+        } else {
+          queueMicrotask(() => {
+            hookStates[currentIndex] = [callback(), dependencies];
+          });
+          hookIndex;
+        }
+      }
+      ```
+
+    - 定义 useRef
+
+      ```js
+      export function useRef(initialState) {
+        hookStates[hookIndex] = hookStates[hookIndex] || {
+          current: initialState,
+        };
+        return hookStates[hookIndex];
+      }
+      ```
+
+      - 定义 useImperativeHandle
+
+        ```js
+        export function useImperativeHandle(ref, handler) {
+          ref.current = handler();
+        }
+        ```
+
+* 渲染流程图
   ![alt 流程](/sys-doc/imgs/simpleReact.svg)

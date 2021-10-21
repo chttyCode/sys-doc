@@ -40,7 +40,7 @@ module.exports = {
       children: [
         "/programme/react",
         ["/programme/react-statue", "状态管理"],
-        ["/programme/react-simple", "简版实现"],
+        ["/programme/react-simple", "react简码"],
         {
           title: "源码解读",
           collapsable: true,
