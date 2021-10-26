@@ -233,7 +233,7 @@
 
       ```
 
-        - 显示创建单利，即 new 产生的是单利
+      - 显示创建单利，即 new 产生的是单利
 
       ```js
          class Window{
@@ -256,9 +256,9 @@
          console.log(window1 === window2)
       ```
 
-        - 构建单利与实现分离
-        - 可以扩展构建逻辑
-        - 缺点：不能使用 new 的方式创建单利
+      - 构建单利与实现分离
+      - 可以扩展构建逻辑
+      - 缺点：不能使用 new 的方式创建单利
 
       ```js
       export {};
@@ -285,15 +285,312 @@
       console.log(window1 === window2);
       ```
 
-        - 构建与实现分离
-        - 可以扩展构建逻辑
-        - 可以使用 new 的方式创建
+      - 构建与实现分离
+      - 可以扩展构建逻辑
+      - 可以使用 new 的方式创建
 
   - 结构
+
     - 代理
-    - 桥接
+
+      - 由于一个对象不能直接引用另外一个对象，所以需要通过代理对象在这两个对象之间起到中介作用
+      - 代理模式就是为目标对象创造一个代理对象，以实现对目标对象的访问
+      - 这样就可以在代理对象里增加一些逻辑判断、调用前或调用后执行一些操作，从而实现了扩展目标的功能
+      - code style
+
+        ```js
+        <!-- 事件代理 -->
+        <body>
+           <ul id="list">
+              <li>1</li>
+              <li>2</li>
+              <li>3</li>
+           </ul>
+        <script>
+        let list = document.querySelector('#list');
+        list.addEventListener('click',event=>{
+              alert(event.target.innerHTML);
+        });
+        </script>
+        </body>
+        ```
+
+            - 事件代理
+
+        ```html
+        <body>
+          <div id="background">
+            <button data-src="/images/bg1.jpg">背景1</button>
+            <button data-src="/images/bg2.jpg">背景2</button>
+          </div>
+          <div class="bg-container">
+            <img id="bg-image" src="/images/bg1.jpg" />
+          </div>
+          <script>
+            let container = document.querySelector('#background');
+
+            class BackgroundImage {
+              constructor() {
+                this.bgImage = document.querySelector('#bg-image');
+              }
+              setSrc(src) {
+                this.bgImage.src = src;
+              }
+            }
+            class LoadingBackgroundImage {
+              static LOADING_URL = `/images/loading.gif`;
+              constructor() {
+                this.backgroundImage = new BackgroundImage();
+              }
+              setSrc(src) {
+                this.backgroundImage.setSrc(LoadingBackgroundImage.LOADING_URL);
+                let img = new Image();
+                img.onload = () => {
+                  this.backgroundImage.setSrc(src);
+                };
+                img.src = src;
+              }
+            }
+            let loadingBackgroundImage = new LoadingBackgroundImage();
+            container.addEventListener('click', function (event) {
+              let src = event.target.dataset.src;
+              loadingBackgroundImage.setSrc(src + '?ts=' + Date.now());
+            });
+          </script>
+        </body>
+        ```
+
+            - 可以先加载缩略图，待高清图 down load 完毕，会执行替换
+
+        ```html
+        <!-- 图片懒加载 -->
+        <body>
+          <div class="image-container">
+            <div class="image">
+              <img data-src="/images/bg1.jpg" />
+            </div>
+            <div class="image">
+              <img data-src="/images/bg2.jpg" />
+            </div>
+            </div>
+          </div>
+        </body>
+        <script>
+          const imgs = document.getElementsByTagName('img');
+          const clientHeight = window.innerHeight || document.documentElement.clientHeight;
+          let loadedIndex = 0;
+          function lazyload() {
+            for (let i = loadedIndex; i < imgs.length; i++) {
+              if (clientHeight - imgs[i].getBoundingClientRect().top > 0) {
+                imgs[i].src = imgs[i].dataset.src;
+                loadedIndex = i + 1;
+              }
+            }
+          }
+          lazyload();
+          window.addEventListener('scroll', lazyload, false);
+        </script>
+        ```
+
+            - 待进入可是区域，加载图片
+
+        ```html
+        <!-- 防抖 -->
+        <body>
+          <div id="container">
+            <div class="content"></div>
+          </div>
+          <script>
+            function throttle(callback, interval) {
+              let last;
+              return function () {
+                let context = this;
+                let args = arguments;
+                let now = Date.now();
+                if (last) {
+                  if (now - last >= interval) {
+                    last = now;
+                    callback.apply(context, args);
+                  }
+                } else {
+                  callback.apply(context, args);
+                  last = now;
+                }
+              };
+            }
+            let lastTime = Date.now();
+            const throttle_scroll = throttle(() => {
+              console.log('触发了滚动事件', (Date.now() - lastTime) / 1000);
+            }, 1000);
+            document.getElementById('container').addEventListener('scroll', throttle_scroll);
+          </script>
+        </body>
+        ```
+
+            - 节流
+
+        ```html
+        <body>
+          <div id="container">
+            <div class="content"></div>
+          </div>
+          <script>
+            function throttle(callback, delay) {
+              let timer;
+              return function () {
+                let context = this;
+                let args = arguments;
+                if (timer) clearTimeout(timer);
+                timer = setTimeout(() => {
+                  callback.apply(context, args);
+                }, delay);
+              };
+            }
+            let lastTime = Date.now();
+            const throttle_scroll = throttle(() => {
+              console.log('触发了滚动事件', (Date.now() - lastTime) / 1000);
+            }, 1000);
+            document.getElementById('container').addEventListener('scroll', throttle_scroll);
+          </script>
+        </body>
+        ```
+
+            - 防抖
+
+        ```js
+        const http = require('http');
+        const httpProxy = require('http-proxy');
+        //创建一个代理服务
+        const proxy = httpProxy.createProxyServer();
+        //创建http服务器并监听8888端口
+        let server = http.createServer(function (req, res) {
+          //将用户的请求转发到本地9999端口上
+          proxy.web(req, res, {
+            target: 'http://127.0.0.1:9999',
+          });
+          //监听代理服务错误
+          proxy.on('error', function (err) {
+            console.log(err);
+          });
+        });
+        server.listen(8888, '0.0.0.0');
+         <!-- 真实请求 -->
+         let server = http.createServer(function (req, res) {
+            res.end('9999');
+         });
+         server.listen(9999, '0.0.0.0');
+        ```
+
+            - 代理请求
+
+        ```js
+           <!-- proxy -->
+
+           let wang={
+              name: 'wanglaoshi',
+              age: 29,
+              height:165
+           }
+           let wangMama=new Proxy(wang,{
+              get(target,key) {
+                 if (key == 'age') {
+                       return wang.age-1;
+                 } else if (key == 'height') {
+                       return wang.height-5;
+                 }
+                 return target[key];
+              },
+              set(target,key,val) {
+                 if (key == 'boyfriend') {
+                       let boyfriend=val;
+                       if (boyfriend.age>40) {
+                          throw new Error('太老');
+                       } else if (boyfriend.salary<20000) {
+                          throw new Error('太穷');
+                       } else {
+                          target[key]=val;
+                          return true;
+                       }
+                 }
+              }
+           });
+           console.log(wangMama.age);
+           console.log(wangMama.height);
+           wangMama.boyfriend={
+              age: 41,
+              salary:3000
+           }
+        ```
+
+      - 生活案例：明星经纪人
+
     - 装饰器
+
+      - 在不改变其原有的结构和功能为对象添加新功能的模式其实就叫做装饰器模式
+      - 装饰比继承更加灵活,可以实现装饰者和被装饰者之间松耦合
+      - 被装饰者可以使用装饰者动态地增加和撤销功能
+      - 类装饰器
+      - 属性装饰器
+      - AOP
+        - 在软件业，AOP 为 Aspect Oriented Programming 的缩写,意为面向切面编程
+        - 可以通过预编译方式和运行期动态代理实现在不修改源代码的情况下给程序动态统一添加功能的一种技术
+      - code style
+
+        ```js
+        interface Animal {
+          swings: string;
+          fly: any;
+        }
+        function flyable(target: any) {
+          console.log(target);
+
+          target.prototype.swings = 2;
+          target.prototype.fly = function () {
+            console.log('I can fly');
+          };
+        }
+        @flyable
+        class Animal {
+          constructor() {}
+        }
+        let animal: Animal = new Animal();
+        console.log(animal.swings);
+        animal.fly();
+        ```
+
+      - 生活案例: 房子的装修
+
     - 适配器
+
+      - 针对已有功能的接口，不适用于新需求
+      - 既要兼容又要适配新需求的场景
+      - 生活案例：充电转化器
+      - code style
+
+        ```js
+        function ajax(config) {
+        const adapter= getAdapter();
+        return adapter(config)
+        }
+        // browser
+        function xhr(config) {}
+        // node
+        function http(config) {}
+        // 适配browser / node
+        function getAdapter(config) {
+           let adapter;
+           if(type process !== undefined){
+              return http
+           }else{
+              return xhr
+           }
+        }
+        ```
+
+      - 对比
+        代理模式 VS 适配器模式 适配器提供不同接口，代理模式提供一模一样的接口
+        代理模式 VS 装饰器模式 装饰器模式原来的功能不变还可以使用，代理模式改变原来的功能
+
   - 行为
     - 观察者
     - 策略模式
