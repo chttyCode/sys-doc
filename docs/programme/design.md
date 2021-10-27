@@ -427,7 +427,7 @@
         </body>
         ```
 
-            - 节流
+            - 防抖
 
         ```html
         <body>
@@ -455,7 +455,7 @@
         </body>
         ```
 
-            - 防抖
+            - 节流
 
         ```js
         const http = require('http');
@@ -592,8 +592,168 @@
         - 代理模式 VS 装饰器模式 装饰器模式原来的功能不变还可以使用，代理模式改变原来的功能
 
   - 行为
+
     - 观察者
+
+      - 观察者模式定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个目标对象，当这个目标对象的状态发生变化时，会通知所有观察者对象，使它们能够自动更新
+      - code style
+
+        - 状态变化
+
+        ```js
+        <!-- 观察者提供update更新方法，被观察者状态发生变化时，调用观察者的update传递状态 -->
+           class Father {
+              public update(state) {
+                 console.log(`father get baby ${state}}`);
+              }
+           }
+           class Mather {
+              public update(state) {
+                 console.log(`father get baby ${state}}`)
+              }
+           }
+
+           class Baby {
+              private subs=[];
+              public state: string = ''
+              setState(state) {
+                 this.state = state
+                  this.subs.forEach(sub=>sub.update(state))
+              }
+            attach(sub){
+               this.subs.push(sub)
+            }
+           }
+           let teacher = new Baby();
+           teacher.attach(new Father(teacher));
+           teacher.attach(new Mather(teacher));
+           teacher.setState('cry');
+        ```
+
+        - dom 事件
+
+        ```html
+        <body>
+          <button id="btn">click</button>
+          <script>
+            let btn = document.getElementById('btn');
+            const handler1 = () => {
+              console.log(1);
+            };
+            const handler2 = () => {
+              console.log(2);
+            };
+            const handler3 = () => {
+              console.log(3);
+            };
+            btn.addEventListener('click', handler1);
+            btn.addEventListener('click', handler2);
+            btn.addEventListener('click', handler3);
+          </script>
+        </body>
+        ```
+
+        - promise
+
+        ```js
+         class Promise {
+            private callbacks: Array<Function> = []
+            constructor(fn) {
+               let resolve = () => {
+                     this.callbacks.forEach(callback => callback())
+               };
+               fn(resolve);
+            }
+            then(callback) {
+               this.callbacks.push(callback);
+            }
+         }
+         let promise = new Promise(function (resolve) {
+            setTimeout(function () {
+               resolve(100);
+            }, 1000);
+         });
+         promise.then(() => console.log(1));
+         promise.then(() => console.log(2));
+        ```
+
+        - redux
+
+        ```js
+        export default function createStore(reducer, preloadedState, enhancer) {
+          if (enhancer) {
+            return enhancer(createStore)(reducer, preloadedState);
+          }
+          let state = preloadedState;
+          let listeners = [];
+          function getState() {
+            return state;
+          }
+          function subscribe(listener) {
+            listeners.push(listener);
+            return function () {
+              const index = listeners.indexOf(listener);
+              listeners.splice(index, 1);
+            };
+          }
+          function dispatch(action) {
+            state = reducer(state, action);
+            listeners.forEach((listener) => listener());
+          }
+          dispatch({ type: '@@redux/INIT' });
+          return {
+            dispatch,
+            subscribe,
+            getState,
+          };
+        }
+        ```
+
+    - 发布订阅
+
+      - 发布订阅模式 把需要做的事放到一个数组中，等会事情发生了让订阅的事依次执行
+
+      - code style
+
+        ```js
+         let events:events = {
+            arr: [], // [fn,fn]
+            on(fn) {
+               this.arr.push(fn);
+            },
+            emit() {
+               this.arr.forEach(fn=>fn());
+            }
+         }
+         interface IPerson {
+            age:number,
+            name:string
+         }
+         let person = {}  as IPerson
+         events.on(() => {
+            if (Object.keys(person).length == 2) {
+               console.log(person)
+            }
+         })
+         events.on(() => {
+            console.log('触发一次')
+         })
+         fs.readFile('./age.txt', 'utf8', (err, data) => {
+            person.age = data;
+            events.emit();
+         });
+         fs.readFile('./name.txt', 'utf8', (err, data) => {
+            person.name = data;
+            events.emit();
+         });
+        ```
+
+        - vs 观察者
+          - 观察者模式 观察者 和 被观察者之间是存在关联的 （内部还是发布订阅）
+          - 发布订阅 发布 和 订阅 （中间有第三方 arr） 发布和订阅之间没有任何关联
+
     - 策略模式
     - 职责链
     - 迭代器
+      - 迭代器模式(Iterator Pattern)用于顺序地访问聚合对象内部的元素，又无需知道对象内部结构。使用了迭代器之后，使用者不需要关心对象的内部构造，就可以按序访问其中的每个元素
     - 状态模式
