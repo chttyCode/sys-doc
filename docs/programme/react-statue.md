@@ -436,3 +436,175 @@
           }
           export default useBoundDispatch;
           ```
+
+      - redux 的工作流程是这样 action -> reducer，这是相当于同步操作，由 dispatch 触发 action 后，直接去 reducer 执行相应的动作，如果处理异步复杂的场景
+
+        - 通过改写了 dispatch 方法
+
+          - 日志功能案例
+
+            ```js
+            import { createStore } from '../redux';
+            import reducer from './reducers';
+            const store = createStore(reducer, {
+              counter1: { number: 0 },
+              counter2: { number: 0 },
+            });
+            let dispatch = store.dispatch;
+            store.dispatch = function (action) {
+              console.log(store.getState());
+              dispatch(action);
+              console.log(store.getState());
+              return action;
+            };
+            export default store;
+            ```
+
+          - 实现异步
+
+            ```js
+            import { createStore } from '../redux';
+            import reducer from './reducers';
+            const store = createStore(reducer, { counter1: { number: 0 }, counter2: { number: 0 } });
+            let dispatch = store.dispatch;
+            store.dispatch = function (action) {
+              setTimeout(() => {
+                dispatch(action);
+              }, 1000);
+              return action;
+            };
+            export default store;
+            ```
+
+        - 中间件方案
+
+          ```js
+          function logger({ getState, dispatch }) {
+            return function (next) {
+              return function (action) {
+                console.log('prev state', getState());
+                next(action);
+                console.log('next state', getState());
+                return action;
+              };
+            };
+          }
+          export default logger;
+          ```
+
+          - applyMiddleware，重写 dispatch
+
+            ```js
+              function applyMiddleware(logger){
+                return function(createStore){
+                    return function(reducer，preloadedState){
+                        let store = createStore(reducer，preloadedState);
+                        dispatch = logger(store)(store.dispatch);
+                        return {
+                            ...store,
+                            dispatch
+                        };
+                    }
+                }
+            }
+            export default applyMiddleware;
+            ```
+
+          - 使用
+
+            ```js
+            let store = applyMiddleware(logger)(createStore)(reducer);
+            ```
+
+            - 优化 createStore
+
+              ```js
+              const createStore = (reducer, preloadedState, enhancer) => {
+                if (typeof enhancer !== 'undefined') {
+                  return enhancer(createStore)(reducer, preloadedState);
+                }
+                let state = preloadedState;
+                let listeners = [];
+                function getState() {
+                  return state;
+                }
+                function dispatch(action) {
+                  state = reducer(state, action);
+                  listeners.forEach((l) => l());
+                  return action;
+                }
+                function subscribe(listener) {
+                  listeners.push(listener);
+                  return () => {
+                    listeners = listeners.filter((l) => l !== listener);
+                  };
+                }
+                dispatch({ type: '@@REDUX/INIT' });
+                return {
+                  getState,
+                  dispatch,
+                  subscribe,
+                };
+              };
+              export default createStore;
+              ```
+
+              - 优化后调用
+
+                ```js
+                const store = createStore(reducer, initState, applyMiddleware(logger));
+                ```
+
+          - 组合多个中间件使用
+
+            ```js
+            <!-- 第一版 -->
+            function compose(...funcS) {
+              return function (args) {
+                for (let i = funcS.length - 1; i >= 0; i--) {
+                  args = funcS[i](args);
+                }
+                return args;
+              };
+            }
+            <!-- 第二版 -->
+            function compose(...funcS) {
+              return funcS.reduce(
+                (a, b) =>
+                  (...args) =>
+                    a(b(...args))
+              );
+            }
+
+            function applyMiddleware(...middleWares) {
+              return function (createStore) {
+                return function (reducer, preloadedState) {
+                  let store = createStore(reducer, preloadedState);
+                  let dispatch;
+                  let middlewareAPI = {
+                    getState: store.getState,
+                    dispatch: (action) => dispatch(action),
+                  };
+                  let chain = middleWares.map((middleware) => middleware(middlewareAPI));
+                  dispatch = compose(...chain)(store.dispatch);
+                  return {
+                    ...store,
+                    dispatch,
+                  };
+                };
+              };
+            }
+            export default applyMiddleware;
+            ```
+
+            - thunk
+              ```js
+              export default ({ dispatch, getState }) =>
+                (next) =>
+                (action) => {
+                  if (typeof action === 'function') {
+                    return action(dispatch, getState);
+                  }
+                  return next(action);
+                };
+              ```
