@@ -19,6 +19,7 @@ module.exports = {
         },
       ],
     },
+    ["mini-program", "小程序"],
     {
       title: "nodejs",
       collapsable: true,
@@ -39,7 +40,10 @@ module.exports = {
       collapsable: true,
       children: [
         "/programme/react",
-        ["/programme/react-statue", "状态管理"],
+        ["/programme/react-statue", "redux"],
+        ["/programme/react-toolkit", "toolkit"],
+        ["/programme/react-recoil", "recoil"],
+        ["/programme/react-hooks", "hooks"],
         ["/programme/react-simple", "react简码"],
         {
           title: "源码解读",
@@ -96,6 +100,8 @@ module.exports = {
   "/leetCode/": [
     ["", "leetCode"],
     ["array", "数组、链表"],
+    ["stack", "队列、栈、双端队列"],
+    ["hash", "hash 表、映射、集合"],
   ],
   "/shell/": [["", "集锦"]],
 };
