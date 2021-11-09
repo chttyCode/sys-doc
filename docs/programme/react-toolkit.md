@@ -233,16 +233,17 @@
     - 值比较
 - createAsyncThunk
 
-  - 使用
+  - 需要派发
 
     ```js
-    export const getTodosList = createAsyncThunk(
+    <!-- 定义 -->
+    export const getTodoList = createAsyncThunk(
       'todos/list',
       async () => await axios.get(`http://localhost:8080/todos/list`)
     );
 
     const initialState = {
-      todos: [],
+      todo: [],
       loading: false,
       error: null,
     };
@@ -256,21 +257,25 @@
           state.loading = true;
         },
         [getTodosList.fulfilled]: (state, action) => {
-          state.todos = action.payload.data;
+          state.todo = action.payload.data;
           state.loading = false;
         },
         [getTodosList.rejected]: (state, action) => {
-          state.todos = [];
+          state.todo = [];
           state.error = action.error.message;
           state.loading = false;
         },
       },
     });
+    <!-- 使用 通过派发执行-->
+    let promise = store.dispatch(getTodoList());
     ```
 
-    - 实现
+    - 封装了请求的 Api，该 Api 会自动派发 pending、fulfilled、rejected 的 action
+    - createReducer、configureStore、createSlice
 
     ```js
+     import produce from 'immer';
     function isPlainObject(value) {
       if (typeof value !== 'object' || value === null) return false;
       return Object.getPrototypeOf(value) === Object.prototype;
@@ -287,10 +292,7 @@
       const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
       return createStore(rootReducer, preloadedState, composeEnhancers(enhancer));
     }
-    ```
 
-    ```js
-    import produce from 'immer';
     function createReducer(initialState, reducers = {}, extraReducers = {}) {
       return function (state = initialState, action) {
         let reducer = reducers[action.type];
@@ -298,6 +300,7 @@
           return produce(state, (draft) => {
             reducer(draft, action);
           });
+          <!-- 处理 createAsyncThunk 派发的action-->
         let extraReducer = extraReducers[action.type];
         if (extraReducer) {
           return produce(state, (draft) => {
@@ -306,29 +309,6 @@
         }
         return state;
       };
-    }
-    ```
-
-    ```js
-    import { createReducer, createAction } from './';
-    function createSlice(options) {
-      let { name, initialState = {}, reducers = {}, extraReducers = {} } = options;
-      let actions = {};
-      const prefixReducers = {};
-      Object.keys(reducers).forEach(function (key) {
-        var type = getType(name, key);
-        actions[key] = createAction(type);
-        prefixReducers[type] = reducers[key];
-      });
-      let reducer = createReducer(initialState, prefixReducers, extraReducers);
-      return {
-        name,
-        reducer,
-        actions,
-      };
-    }
-    function getType(slice, actionKey) {
-      return slice + '/' + actionKey;
     }
     ```
 
@@ -346,6 +326,7 @@
       });
 
       function actionCreator(arg) {
+          <!-- 会派发一个function  -->
         return function (dispatch) {
           dispatch(pending());
           const promise = payloadCreator(arg);
@@ -371,49 +352,51 @@
     ```
 
 - createApi
-  ```js
-  import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-  const todosApi = createApi({
-    reducerPath: 'todosApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
-    endpoints: (builder) => {
-      return {
-        getTodos: builder.query({ query: (id) => `/todos/detail/${id}` }),
-      };
-    },
-  });
-  export default todosApi;
-  ```
-  ```js
-  import { configureStore } from '@reduxjs/toolkit';
-  import todosApi from './todos';
-  const store = configureStore({
-    reducer: {
-      [todosApi.reducerPath]: todosApi.reducer,
-    },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(todosApi.middleware),
-  });
-  export default store;
-  ```
-  ```js
-  import todosApi from './todos';
-  function App() {
-    const { data, error, isLoading } = todosApi.endpoints.getTodos.useQuery(1);
-    console.log('isLoading=', isLoading, 'error=', error, 'data=', data);
-    if (isLoading) {
-      return <div>加载中....</div>;
-    } else {
-      if (error) {
-        return <div>{error.error}</div>;
-      } else if (data) {
-        return <div>{data.text}</div>;
+  - 可以定义批量接口
+    ```js
+    import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+    const todosApi = createApi({
+      reducerPath: 'todosApi',
+      baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:8080' }),
+      endpoints: (builder) => {
+        return {
+          getTodos: builder.query({ query: (id) => `/todos/detail/${id}` }),
+        };
+      },
+    });
+    export default todosApi;
+    ```
+  - 需要扩展 middleware
+    ```js
+    import { configureStore } from '@reduxjs/toolkit';
+    import todosApi from './todos';
+    const store = configureStore({
+      reducer: {
+        [todosApi.reducerPath]: todosApi.reducer,
+      },
+      middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(todosApi.middleware),
+    });
+    export default store;
+    ```
+    ```js
+    import todosApi from './todos';
+    function App() {
+      const { data, error, isLoading } = todosApi.endpoints.getTodos.useQuery(1);
+      console.log('isLoading=', isLoading, 'error=', error, 'data=', data);
+      if (isLoading) {
+        return <div>加载中....</div>;
       } else {
-        return null;
+        if (error) {
+          return <div>{error.error}</div>;
+        } else if (data) {
+          return <div>{data.text}</div>;
+        } else {
+          return null;
+        }
       }
     }
-  }
-  export default App;
-  ```
+    export default App;
+    ```
   - createApi
     ```js
     function createApi({ reducerPath, baseQuery, endpoints }) {
