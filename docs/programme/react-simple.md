@@ -1022,6 +1022,7 @@ export function updateChildren(parentDOM, oldVChildren, newVChildren) {
 - 创建上线文 API
 
 ```js
+// v1
 function createContext() {
   let context = { $$typeof: REACT_CONTEXT };
   context.Provider = {
@@ -1032,6 +1033,19 @@ function createContext() {
     $$typeof: REACT_CONTEXT,
     _context: context,
   };
+  return context;
+}
+// v2
+function createContext(initialValue = {}) {
+  let context = { Provider, Consumer };
+  function Provider(props) {
+    context._currentValue = context._currentValue || initialValue;
+    Object.assign(context._currentValue, props.value);
+    return props.children;
+  }
+  function Consumer(props) {
+    return props.children(context._currentValue);
+  }
   return context;
 }
 ```

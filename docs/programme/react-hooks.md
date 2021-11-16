@@ -172,12 +172,369 @@
       ```
 
   - useContext
+
+    - 接收一个 context 对象（React.createContext 的返回值）并返回该 context 的当前值
+    - 当前的 context 值由上层组件中距离当前组件最近的 <MyContext.Provider> 的 value prop 决定
+    - useContext(MyContext) 相当于 class 组件中的 static contextType = MyContext 或者 <MyContext.Consumer>
+    - useContext(MyContext) 只是让你能够读取 context 的值以及订阅 context 的变化。你仍然需要在上层组件树中使用 <MyContext.Provider> 来为下层组件提供 context
+    - eg:
+
+      ```js
+      import React from "./react";
+      import ReactDOM from "./react-dom";
+
+      const CounterContext = React.createContext();
+
+      function reducer(state, action) {
+        switch (action.type) {
+          case "add":
+            return { number: state.number + 1 };
+          case "minus":
+            return { number: state.number - 1 };
+          default:
+            return state;
+        }
+      }
+      function Counter() {
+        let { state, dispatch } = React.useContext(CounterContext);
+        return (
+          <div>
+            <p>{state.number}</p>
+            <button onClick={() => dispatch({ type: "add" })}>+</button>
+            <button onClick={() => dispatch({ type: "minus" })}>-</button>
+          </div>
+        );
+      }
+      function App() {
+        const [state, dispatch] = React.useReducer(reducer, { number: 0 });
+        return (
+          <CounterContext.Provider value={{ state, dispatch }}>
+            <Counter />
+          </CounterContext.Provider>
+        );
+      }
+      ```
+
+      ```js
+      function useContext(context) {
+        return context._currentValue;
+      }
+      ```
+
   - useEffect
+    - 给函数组件增加了操作副作用的能力。它跟 class 组件中的 componentDidMount、componentDidUpdate 和 componentWillUnmount 具有相同的用途，只不过被合并成了一个 API
+    - eg:
+      ```js
+      import React from "./react";
+      import ReactDOM from "./react-dom";
+      function Counter() {
+        const [number, setNumber] = React.useState(0);
+        React.useEffect(() => {
+          console.log("开启一个新的定时器");
+          const $timer = setInterval(() => {
+            setNumber((number) => number + 1);
+          }, 1000);
+          return () => {
+            console.log("销毁老的定时器");
+            clearInterval($timer);
+          };
+        });
+        return <p>{number}</p>;
+      }
+      ```
+      ```js
+      export function useEffect(callback, dependencies) {
+        let currentIndex = hookIndex;
+        if (hookStates[hookIndex]) {
+          let [destroy, lastDeps] = hookStates[hookIndex];
+          let same =
+            dependencies &&
+            dependencies.every((item, index) => item === lastDeps[index]);
+          if (same) {
+            hookIndex++;
+          } else {
+            destroy && destroy();
+            setTimeout(() => {
+              hookStates[currentIndex] = [callback(), dependencies];
+            });
+            hookIndex++;
+          }
+        } else {
+          setTimeout(() => {
+            hookStates[currentIndex] = [callback(), dependencies];
+          });
+          hookIndex++;
+        }
+      }
+      ```
   - useLayoutEffect+useRef
+
+    - useEffect 不会阻塞浏览器渲染，而 useLayoutEffect 会浏览器渲染
+    - eg:
+
+      ```js
+      const Animate = () => {
+        const ref = React.useRef();
+        React.useLayoutEffect(() => {
+          ref.current.style.transform = `translate(500px)`; //TODO
+          ref.current.style.transition = `all 500ms`;
+        });
+        let style = {
+          width: "100px",
+          height: "100px",
+          borderRadius: "50%",
+          backgroundColor: "red",
+        };
+        return <div style={style} ref={ref}></div>;
+      };
+      ```
+
   - forwardRef
+    - forwardRef 将 ref 从父组件中转发到子组件中的 dom 元素上,子组件接受 props 和 ref 作为参数
   - useImperativeHandle
+    - useImperativeHandle 可以让你在使用 ref 时自定义暴露给父组件的实例值
+    - eg:
+      ```js
+      function Child(props, ref) {
+        const inputRef = React.useRef();
+        React.useImperativeHandle(ref, () => ({
+          focus() {
+            inputRef.current.focus();
+          },
+        }));
+        return <input type="text" ref={inputRef} />;
+      }
+      const ForwardChild = React.forwardRef(Child);
+      function Parent() {
+        let [number, setNumber] = React.useState(0);
+        const inputRef = React.useRef();
+        function getFocus() {
+          console.log(inputRef.current);
+          inputRef.current.value = "focus";
+          inputRef.current.focus();
+        }
+        return (
+          <div>
+            <ForwardChild ref={inputRef} />
+            <button onClick={getFocus}>获得焦点</button>
+            <p>{number}</p>
+            <button
+              onClick={() => {
+                debugger;
+                setNumber(number + 1);
+              }}
+            >
+              +
+            </button>
+          </div>
+        );
+      }
+      ```
 
 - redux hooks
+
+  - useSelector
+
+    - 它在 class 组件中的 connect 类似，都会订阅 store
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import { useSelector } from "react-redux";
+
+      export const CounterComponent = () => {
+        const counter = useSelector((state) => state.counter);
+        return <div>{counter}</div>;
+      };
+      ```
+
+      - 实现见 redux
+
+  - useDispatch
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import { useDispatch } from "react-redux";
+
+      export const CounterComponent = ({ value }) => {
+        const dispatch = useDispatch();
+
+        return (
+          <div>
+            <span>{value}</span>
+            <button onClick={() => dispatch({ type: "increment-counter" })}>
+              Increment counter
+            </button>
+          </div>
+        );
+      };
+      ```
+
+      - 实现见 redux
+
+- react-router-dom hooks
+
+  - useParams
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import ReactDOM from "react-dom";
+      import {
+        BrowserRouter as Router,
+        Route,
+        Switch,
+        useParams,
+      } from "react-router-dom";
+
+      function Post() {
+        let { title } = useParams();
+        return <div>{title}</div>;
+      }
+
+      ReactDOM.render(
+        <Router>
+          <div>
+            <Switch>
+              <Route path="/post/:title">
+                <Post />
+              </Route>
+            </Switch>
+          </div>
+        </Router>,
+        document.getElementById("root")
+      );
+      ```
+
+  - useLocation
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import ReactDOM from "react-dom";
+      import {
+        BrowserRouter as Router,
+        Route,
+        Switch,
+        useParams,
+        useLocation,
+      } from "react-router-dom";
+
+      function Post() {
+        let { title } = useParams();
+        const location = useLocation();
+        return (
+          <div>
+            {title}
+            <hr />
+            {JSON.stringify(location)}
+          </div>
+        );
+      }
+
+      ReactDOM.render(
+        <Router>
+          <div>
+            <Switch>
+              <Route path="/post/:title">
+                <Post />
+              </Route>
+            </Switch>
+          </div>
+        </Router>,
+        document.getElementById("root")
+      );
+      ```
+
+  - useHistory
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import ReactDOM from "react-dom";
+      import {
+        BrowserRouter as Router,
+        Route,
+        Switch,
+        useHistory,
+      } from "react-router-dom";
+
+      function Post({ match, history }) {
+        let { title } = match.params;
+        return (
+          <div>
+            {title}
+            <hr />
+            <button type="button" onClick={() => history.goBack()}>
+              回去
+            </button>
+          </div>
+        );
+      }
+      function Home({ history }) {
+        return (
+          <>
+            <button type="button" onClick={() => history.push("/post/hello")}>
+              title
+            </button>
+          </>
+        );
+      }
+      ReactDOM.render(
+        <Router>
+          <div>
+            <Switch>
+              <Route exact path="/" component={Home} />
+              <Route path="/post/:title" component={Post} />
+            </Switch>
+          </div>
+        </Router>,
+        document.getElementById("root")
+      );
+      ```
+
+  - useRouteMatch
+
+    - eg:
+
+      ```js
+      import React from "react";
+      import ReactDOM from "react-dom";
+      import {
+        BrowserRouter as Router,
+        Route,
+        useRouteMatch,
+      } from "react-router-dom";
+      function NotFound() {
+        return <div>Not Found</div>;
+      }
+      function Post(props) {
+        return <div>{props.match.params.title}</div>;
+      }
+      function App() {
+        let match = useRouteMatch({
+          path: "/post/:title",
+          strict: true,
+          sensitive: true,
+        });
+        console.log(match);
+        return <div>{match ? <Post match={match} /> : <NotFound />}</div>;
+      }
+
+      ReactDOM.render(
+        <Router>
+          <App />
+        </Router>,
+        document.getElementById("root")
+      );
+      ```
+
 - 自定义 hooks
 
   - 优点
