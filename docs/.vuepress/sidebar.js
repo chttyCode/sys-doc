@@ -5,10 +5,11 @@ module.exports = {
     ["vscode", "vscode"],
     ["typescript", "Typescript"],
     {
-      title: "Javascript",
+      title: "JS",
       collapsable: true,
       children: [
         "/programme/javascript",
+        "/programme/javascript-1",
         {
           title: "小红书",
           collapsable: true,
@@ -44,6 +45,7 @@ module.exports = {
         ["/programme/react-toolkit", "toolkit"],
         ["/programme/react-recoil", "recoil"],
         ["/programme/react-hooks", "hooks"],
+        ["/programme/react-context", "context"],
         ["/programme/react-simple", "react简码"],
         {
           title: "源码解读",
@@ -57,7 +59,15 @@ module.exports = {
         },
       ],
     },
-    ["browser", "浏览器"],
+    {
+      title: "浏览器",
+      collapsable: true,
+      children: [
+        "/programme/browser",
+        "/programme/browser-1",
+        "/programme/browser-2",
+      ],
+    },
     {
       title: "设计模式",
       collapsable: true,
