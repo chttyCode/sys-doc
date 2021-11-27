@@ -66,4 +66,7 @@
 3. Todo Tree
 4. vscode-icons
 5. Bookmarks
-
+6. Tabnine
+7. Code Runner
+8. JavaScript (ES6) code snippets
+9. Project Manager
