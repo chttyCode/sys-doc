@@ -47,6 +47,7 @@ module.exports = {
         ["/programme/react-hooks", "hooks"],
         ["/programme/react-context", "context"],
         ["/programme/react-simple", "react简码"],
+        ["/programme/react-recommend", "react开发范式"],
         {
           title: "源码解读",
           collapsable: true,
