@@ -1,6 +1,11 @@
-# react 编程范式
+> 定一个基调，即探索一个清晰的 React 项目开发范式
 
-## 状态管理方式
+- 目前项目的业务代码，主要的痛点
+  - redux 概念比较多
+  - 模板定义冗余
+  - 组件状态耦合
+
+## 状态方案演进
 
 - redux
 
@@ -185,40 +190,49 @@
 
 ## 方案对比
 
-- 目的
-  - 实现代码可维护可扩展
-- 目录结构即程序结构满足 LIFT 准则
+- 管理方案对比，toolkit、recoil 不在公司可信库，不做对比
+
+| Context API                                                 | Redux                                          |
+| ----------------------------------------------------------- | ---------------------------------------------- |
+| React 附带的内置工具                                        | 需要额外安装，增加最终包的大小                 |
+| 需要最少的设置                                              | 需要大量设置才能将其与 React 应用程序集成      |
+| 适用不经常刷新或更新的静态数据而设计                        | 可以处理静态&动态数据                          |
+| 添加新上下文需要从头开始创建                                | 易于添加新数据/操作，因此易于扩展              |
+| 即使使用开发工具，在高度嵌套的 React 组件结构中调试也很困难 | Redux 开发工具，可简化调试                     |
+| UI 逻辑和状态管理逻辑在同一个组件中                         | 使用单独的 UI 逻辑和状态管理逻辑更好的代码组织 |
+
+## 推荐范式
+
+> 开发范式推荐 MVC 模式、视图归视图、逻辑归逻辑
+
+- 目录定义、采用集中定义满足
   - 轻松定位代码(Locate)
   - 一眼识别代码(Identify)
   - 层次不要太多(Flattest)
   - 无重复冗余(Try)
-- 管理方案对比，toolkit、recoil 都属于暂不可用，不做对比
-
-| Context API                                                 | Redux                                             |
-| ----------------------------------------------------------- | ------------------------------------------------- |
-| React 附带的内置工具                                        | 需要额外安装，增加最终包的大小                    |
-| 需要最少的设置                                              | 需要大量设置才能将其与 React 应用程序集成         |
-| 专为不经常刷新或更新的静态数据而设计                        | 可以处理静态&动态数据                             |
-| 添加新上下文需要从头开始创建                                | 由于在初始设置后易于添加新数据/操作，因此易于扩展 |
-| 即使使用开发工具，在高度嵌套的 React 组件结构中调试也很困难 | Redux 开发工具，可简化调试                        |
-| UI 逻辑和状态管理逻辑在同一个组件中                         | 使用单独的 UI 逻辑和状态管理逻辑更好的代码组织    |
-
 - redux
   - 可以在根据业务创建领域 reducer、集中业务处理逻辑
-  - 可以封装一些轮子简化 redux 定义
+  - 分离视图逻辑
 - context + hooks
   - 共享跨层级低刷新频率的状态
-  - react 对 context 的刷新没有优化
-- 编程方式
-  - 推荐函数式
+  - 公共组件、复杂逻辑自定 hooks
+- 推荐函数式取代 class
+  - 逻辑清晰
+  - 避免 this
+  - 逻辑聚合
     > 代码重用：在 hooks 出来之前，常见的代码重用方式是 HOC 和 render props，这两种方式带来的问题是：你需要解构自己的组件，同时会带来很深的组件嵌套
     > 复杂的组件逻辑：在 class 组件中，有许多的 lifecycle 函数，你需要在各个函数的里面去做对应的事情。这种方式带来的痛点是：逻辑分散在各处，开发者去维护这些代码会分散自己的精力，理解代码逻辑也很吃力
-  - 自定义 hooks 处理逻辑复用
-- 目前看比较理想的是 recoil,recoil 依然是处在试验阶段
+- 开发 redux 请求中间件、简化请求
+- 造轮子、封装简化 redux 模板定义
+- 社区目前新的趋势 recoil,recoil 依然是处在试验阶段
 
 ## 参考文档
 
 - [toolkit](https://redux-toolkit.js.org/)
 - [recoilJs](https://recoiljs.org/)
-- [You Might Not Need Redux](https://medium.com/@dan_abramov/you-might-not-need-redux-be46360cf367)
-- [前端架构之 React 领域驱动设计](https://mp.weixin.qq.com/s?__biz=MzIyNDU2NTc5Mw==&mid=2247497927&idx=1&sn=d55f61d2246a97c0ef3a7a6137f793e1&chksm=e80fb789df783e9f02e29dae87f887ea1a8853577cd16bf37879410aa6da9799a24f3baf510b&scene=132#wechat_redirect)
+- [ReactJs](https://reactjs.org/)
+- [Hooks](https://chttycode.github.io/sys-doc/programme/react-hooks.html)
+- [Context](https://chttycode.github.io/sys-doc/programme/react-context.html)
+- [Recoil](https://chttycode.github.io/sys-doc/programme/react-recoil.html)
+- [Toolkit](https://chttycode.github.io/sys-doc/programme/react-toolkit.html)
+- [Redux](https://chttycode.github.io/sys-doc/programme/react-statue.html)
