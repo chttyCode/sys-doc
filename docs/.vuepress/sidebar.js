@@ -103,6 +103,19 @@ module.exports = {
         "/engineer/webpack-source",
       ],
     },
+    {
+      title: "组件库开发",
+      collapsable: true,
+      children: [
+        "/engineer/component",
+        "/engineer/component-1",
+        "/engineer/component-2",
+        "/engineer/component-3",
+        "/engineer/component-4",
+        "/engineer/component-5",
+        "/engineer/component-6",
+      ],
+    },
   ],
   "/framework/": [
     ["", "framework"],
