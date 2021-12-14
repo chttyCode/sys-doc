@@ -65,8 +65,20 @@ module.exports = {
       collapsable: true,
       children: [
         "/programme/browser",
-        "/programme/browser-1",
-        "/programme/browser-2",
+        {
+          title: "工作原理&实践",
+          collapsable: true,
+          children: [
+            "/programme/browser-1",
+            "/programme/browser-2",
+            "/programme/browser-3",
+            "/programme/browser-4",
+            "/programme/browser-5",
+            "/programme/browser-6",
+            "/programme/browser-7",
+          ],
+        },
+        "/programme/v8.md",
       ],
     },
     {
