@@ -1,6 +1,6 @@
-# vscode
+# 指法
 
-## 快捷键
+## vscode 快捷键
 
 1. 查找文件
 
@@ -61,12 +61,40 @@
 
 ## 插件
 
-1. Code Spell Checker
-2. TODO Highlight
-3. Todo Tree
-4. vscode-icons
+1. Abracadabra, refactor this!
+2. Angular Language Service
+3. Angular Schematics
+4. Better Comments
 5. Bookmarks
-6. Tabnine
-7. Code Runner
-8. JavaScript (ES6) code snippets
-9. Project Manager
+6. Bracket Pair Colorizer 2
+7. Chinese (Simplified) (简体中文) Language Pack for Visual Studio Code
+8. Code Runner
+9. Code Spell Checker
+10. Codelf
+11. CodeMetrics
+12. ESLint
+13. GitLens — Git supercharged
+14. Issue tracker in IDE: integrates with Jira, Linear, GitHub, Slack, and more
+15. JavaScript (ES6) code snippets
+16. LeetCode
+17. Markdown Preview Enhanced
+18. NG-ALAIN Extension Pack
+19. NG-ALAIN Snippets
+20. NG-ZORRO Snippets
+21. Path Intellisense
+22. Peacock
+23. Prettier - Code formatter
+24. Project Manager
+25. Shades of Purple
+26. Stylelint
+27. Tabnine AI Autocomplete for Javascript, Python, Typescript, PHP, Go, Java, Ruby & more
+28. Todo Tree
+29. Winter is Coming Theme
+
+# window 快捷键
+
+1. 虚拟
+   Win 键-Ctrl-D：创建新的虚拟桌面。
+   Win 键-Ctrl-F4：删除当前虚拟桌面。
+   Win 键-Ctrl-左键：切换到相邻左侧的虚拟桌面。
+   Win 键-Ctrl-右键：切换到相邻右侧的虚拟桌面。
