@@ -15,6 +15,7 @@
     - 问题
       > Error: Error while loading rule '@typescript-eslint/await-thenable': You have used a rule which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project" property for @typescript-eslint/parser.
       - 通过 overrides 添加覆盖解析规则
+      - script 路径定义
 
     ```js
     //.eslintrc.js
@@ -63,6 +64,37 @@
       ],
     };
     ```
+
+- husky
+  - npm set-script 命令在 v 7.x 之后支持
+  - husky add 失效
+    ```js
+      Usage:
+      husky install [dir] (default: .husky)
+      husky uninstall
+      husky set|add <file> [cmd]
+    ```
+    - 解决方式
+      - 升级 npm 到 v7.x
+- lint-staged
+
+  - 增量校验、避免全量校验
+  - 使用方式
+    - 命令行方式
+    ```js
+      npx mrm@2 lint-staged
+    ```
+    - 手动配置
+      - 支持多种定义方式
+        - package.json
+    - lint 解析流程
+      - 自动解析 git root，无需配置
+      - 选择存在于项目目录中的暂存文件
+      - 使用指定的 glob 模式过滤它们
+      - 将绝对路径作为参数传递给 linter
+    - with husky
+      - husky hooks 执行 npx --no-install lint-staged
+      - 配置 lint-staged
 
 - 组件开发流程
 - 组件文档生成
