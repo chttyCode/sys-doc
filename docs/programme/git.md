@@ -51,7 +51,7 @@
       git remote set-url origin https://<TOKEN>@github.com/<user_name>/<repo_name>.git
     ```
 
-- 撤销某单一文件已 commit 并 push 操作
+- commit 撤销
   - 查看提交记录
     ```js
         git log  (或 git log --pretty=oneline)
@@ -81,4 +81,72 @@
   - 强制提交
     ```js
     git push origin master --force
+    ```
+- git add 撤回
+  ```js
+  <!-- 用库里文件直接覆盖暂存区 -->
+    git reset <file>
+  ```
+- 分支同步
+
+  - fork 远程分支
+    - fork 到本地不改分支名
+    ```js
+      git fetch
+      git checkout 远程分支名
+    ```
+    - fork 之后改分支名
+    ```js
+      git checkout -b origin/远程分支名 本地分支名
+      <!-- 不建立追踪时 -->
+      git push origin远程分支名:本地分支名
+      <!-- 建立远程追踪 -->
+      git branch --set-upstream-to origin/localBranchName
+    ```
+  - 基于远程 master 创建本地分支
+
+  ```js
+    git checkout -b newBrach origin/master
+  ```
+
+  - 合并 commit 到当前分支
+
+  ```js
+     git cherry-pick [commit]
+  ```
+
+  - 删除本地分支
+
+  ```js
+    git branch -d [branch-name]
+  ```
+
+  - 删除远程分支
+
+  ```js
+    git push origin --delete [branch-name]
+  ```
+
+  - 分支重命名
+
+  ```js
+      git branch -m 原分支名 新分支名
+  ```
+
+  - 本地分支推送远程
+
+  ```js
+  git push <远程主机名> <本地分支名>:<远程分支名>
+  ```
+
+- 好用常用的命令
+  - 使用一次新的 commit，替代上一次提交
+    - 提交文案不改变
+    ```js
+       <!-- 按照提示修改信息就行啦 -->
+       git commit --amend
+    ```
+    - 改变提交文案
+    ```js
+      git commit --amend --no-edit(对已提交的且已push的commit 不好用)
     ```
