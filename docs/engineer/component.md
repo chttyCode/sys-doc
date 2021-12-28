@@ -1,12 +1,9 @@
-# reactTmp
+# 代码风格统一
 
-React 模板工程
-
--   webpack
--   react
--   babel
--   scss
 -   prettier
+    ```js
+        npm i prettier -D
+    ```
 -   eslint
 
     -   自带解释器支持支 ECMAScript 语法
@@ -18,21 +15,42 @@ React 模板工程
             -   eslint-plugin-react-hooks 强制执行 Hooks 规则
             -   @typescript-eslint/eslint-plugin
     -   问题
-        > Error: Error while loading rule '@typescript-eslint/await-thenable': You have used a rule which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project" property for @typescript-eslint/parser.
-        > Definition for rule '@typescript-eslint/rule-name' was not found @typescript-eslint/rule-name
+        ```js
+            Error: Error while loading rule '@typescript-eslint/await-thenable': You have used a rule which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project" property for @typescript-eslint/parser.
+        ```
+            - 指定parserOptions配置
+        ```js
+         checker.getTypeArguments is not a function
+        ```
+            - 升级 typescript>4
 
 -   husky
     -   "prepare": "husky install" 在 npm i 时会自动执行该命令，初始化 husky
-    -   npm set-script 命令在 v 7.x 之后支持
-    -   husky add 失效
+        -   利用 git 可以通过 core.hooks 指定 hooks 文件的能力，在文件中显示的注册构造
         ```js
-          Usage:
-          husky install [dir] (default: .husky)
-          husky uninstall
-          husky set|add <file> [cmd]
+            npm set-script prepare "husky install"
         ```
-        -   解决方式
+    -   添加指定的 hooks
+        ```js
+            npx husky add .husky/pre-commit "npm test"
+        ```
+    -   pre-commit 钩子
+        -   执行 lint-staged ，对暂存区内容进行校验
+    -   commit-msg 钩子
+        -   对提交 message 的格式进行校验
+        -   统一团队提交规范
+        -   对错误 msg 格式给出提示
+    -   注意点
+        -   npm set-script 命令在 v 7.x 之后支持
             -   升级 npm 到 v7.x
+        -   通过 husky add 添加的脚本会存在编码问题
+            ```js
+            SyntaxError: Invalid or unexpected token
+            ```
+            -   手动调整 pre-commit 脚本的编码格式
+            -   手动创建 pre-commit 文件
+        -   需添加 prepare script 命令，注册 husky 的 hooks
+        -   vs old config package.json 无需添加校验规则
 -   lint-staged
     -   增量校验、避免全量校验
     -   使用方式
@@ -43,36 +61,61 @@ React 模板工程
         -   手动配置
             -   支持多种定义方式
                 -   package.json
+                -   .lintstagedrc
         -   lint 解析流程
             -   自动解析 git root，无需配置
             -   选择存在于项目目录中的暂存文件
             -   使用指定的 glob 模式过滤它们
             -   将绝对路径作为参数传递给 linter
         -   with husky
-            -   husky hooks 执行 npx --no-install lint-staged
+            -   在 husky 的 pre-commit hooks 执行 npx --no-install lint-staged
             -   配置 lint-staged
+                ```js
+                <!-- 方式1 -->
+                "lint-staged": {
+                    "app/**/*.{ts,tsx}": [
+                        "eslint --quiet",
+                        "prettier --write"
+                    ],
+                    "app/**/*.scss": [
+                        "stylelint --syntax scss",
+                        "stylelint --syntax scss --fix"
+                    ]
+                },
+                ```
+                vs
+                ```js
+                <!-- 方式2 -->
+                "lint-staged": {
+                    "app/**/*.{ts,tsx}": [
+                        "npm run lint:ts",
+                        "prettier --write"
+                    ],
+                    "app/**/*.scss": [
+                        "stylelint --syntax scss",
+                        "stylelint --syntax scss --fix"
+                    ]
+                },
+                ```
+        -   注意点
+            -   方式 1：lint-staged 可以对过滤的文件执行 eslint 命令
+            -   方式 2：不能 get 到暂存区的文件，是全量的 lint
+            -   v10 版本之后不再需要手动 git add 将修复的内容添加到暂存区，会自动执行
 -   commit msg
 
     -   @commitlint/cli：检测提交消息
-        -   问题
-            ```js
-             SyntaxError: Invalid or unexpected token
-            ```
-            -   原因是编码格式问题，通过命令行添加 rc 文件时的编码格式默认是 UTF-16
-            -   解决方式，删除命令文件手动创建 rc 文件或者更改 rc 文件编码格式
-    -   commitlint-config-gitmoji:提交消息模板
-        -   需要手动添加 JSON 数据
-            -   Failed to fetch gitmoji JSON, please refer to https://github.com/arvinxx/gitmoji-commit-workflow/tree/master/packages/plugin#fetch-error for help.
-    -   @commitlint/config-angular：才用 angular 的提交模板‘
-    -   @commitlint/config-conventional
+    -   msg 格式校验方案
+
+        -   commitlint-config-gitmoji：需要手动添加 JSON 数据
+        -   @commitlint/config-angular：为 angular 的提交模板
+        -   @commitlint/config-conventional 官方推荐
+
     -   校验失败给出 msg 消息模板
 
         -   husky 的 commit-msg 钩子进行配置修改
             -   shell 脚本执行失败没有退出会继续执行后续 shell
             -   以非 0 代码结束，打断提交
-        -   添加失败执行脚本
-            -   通过 npm 执行脚本，输出文案提示，不熟悉 shell 脚本
-                -   $? 可以获取执行的状态，但是当 npx 执行失败就直接退出脚本执行了，无发给而出提示文案
+        -   添加失败提示模板
 
         ```js
          #!/bin/sh
@@ -94,4 +137,62 @@ React 模板工程
         fi
         ```
 
--   release
+-   .eslintrc.js
+
+    -   本规则，基于最新的华为前端开发规范，具体可见链接
+        -   [华为 JavaScript 语言通用编程规范](http://w3.huawei.com/ipd/tsl/#!tsl_new/standard/standard.html?standardId=43549)
+    -   rules
+        [eslint rules 规则](https://git.huawei.com/h00508685/eslint-demo/blob/master/.eslintrc.js)
+
+    ```js
+    /**
+     * 本规则，基于最新的华为前端开发规范，具体可见链接：
+     * http://w3.huawei.com/ipd/tsl/#!tsl_new/standard/standard.html?standardId=43549
+     */
+
+    module.exports = {
+        parser: '@typescript-eslint/parser', // 5.8.0
+        parserOptions: {
+            ecmaVersion: 2015,
+            // ECMAScript modules 模式
+            sourceType: 'module',
+            ecmaFeatures: {
+                jsx: true,
+            },
+        },
+        env: {
+            browser: true,
+            node: true,
+            commonjs: true,
+            es6: true,
+        },
+        settings: {
+            react: {
+                version: 'detect',
+            },
+            'import/extensions': ['.ts', '.tsx'],
+        },
+        plugins: ['react', 'jsx-a11y', '@typescript-eslint', 'react-hooks'],
+        extends: [
+            'eslint:recommended',
+            'plugin:@typescript-eslint/recommended',
+            'plugin:@typescript-eslint/recommended-requiring-type-checking',
+            'plugin:react-hooks/recommended',
+        ],
+        rules: {},
+        overrides: [
+            {
+                files: ['*.ts', '*.tsx'], // Your TypeScript files extension
+                parserOptions: {
+                    project: ['./tsconfig.json'], // Specify it only for TypeScript files
+                },
+            },
+        ],
+    };
+    ```
+
+-   第三方库(可信库)
+
+    ```JS
+    npm i typescript@4.5.4   eslint@7.32.0 prettier@2.4.1 husky@7.0.4 lint-staged@11.2.6 @commitlint/cli@13.2.1 @commitlint/config-conventional@13.2.0   @typescript-eslint/parser@5.8.0 eslint-plugin-react@7.27.1 eslint-plugin-babel@5.3.1 eslint-plugin-import@2.25.3 eslint-plugin-jsx-a11y@6.5.1 eslint-plugin-react-hooks@4.3.0 @typescript-eslint/eslint-plugin@5.8.0 -D
+    ```
