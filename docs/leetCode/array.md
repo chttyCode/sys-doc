@@ -33,14 +33,6 @@ sidebarDepth: 2
   - 70 ✅
   - 15 ✅
 
-  - 26 ✅ => 80 ✅
-  - 189
-  - 21
-  - 88
-  - 1
-  - 283
-  - 66
-
 ## 26
 
 > 注意点：1. 该数组是有序数组 2. 隐式要求就是要去返回重数组，不仅是长度
@@ -101,13 +93,13 @@ var removeDuplicates = function(nums) {
 
 ```js
 // unshift支持批量塞入、splice包含当前小标，且支持
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   let len = nums.length;
   nums.unshift(...nums.splice(len - k));
   return nums;
 };
 // AC超时
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   let len = nums.length;
   k = k % len;
   while (k > 0) {
@@ -121,7 +113,7 @@ var rotate = function (nums, k) {
 - 创建新数组，将每一项放到最终该放的位置上
 
 ```js
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   let len = nums.length;
   let newArray = new Array(len);
   k %= len;
@@ -138,7 +130,7 @@ var rotate = function (nums, k) {
 - 在原数组上进行翻转
 
 ```js
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   function reverse(nums, start, end) {
     while (start < end) {
       [nums[start], nums[end]] = [nums[end], nums[start]];
@@ -154,7 +146,6 @@ var rotate = function (nums, k) {
   return nums;
 };
 ```
-
 
 # 链表
 
@@ -177,3 +168,20 @@ var rotate = function (nums, k) {
   - 如果数据缓存中不存在 - 如果数据未满，在头节点插入新数据 - 如果数据已满，删除尾节点，将新数据插入头结点
 
 > CPU 缓存机制:CPU 在从内存读取数据的时候，会先把读取到的数据加载到 CPU 的缓存中。而 CPU 每次从内存读取数据并不是只读取那个特定要访问的地址，而是读取一个数据块(这个大小我不太确定。。)并保存到 CPU 缓存中，然后下次访问内存数据的时候就会先从 CPU 缓存开始查找，如果找到就不需要再从内存中取。这样就实现了比内存访问速度更快的机制，也就是 CPU 缓存存在的意义:为了弥补内存访问速度过慢与 CPU 执行速度快之间的差异而引入。
+
+- Linked List
+
+- 206
+- 24
+- 141
+- 142
+- 25
+
+- test
+  - 26 ✅ => 80 ✅
+  - 189
+  - 21
+  - 88
+  - 1
+  - 283
+  - 66
