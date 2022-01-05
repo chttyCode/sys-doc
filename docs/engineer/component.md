@@ -209,6 +209,12 @@
     - @commitlint/config-angular：为 angular 的提交模板
     - @commitlint/config-conventional 官方推荐
 
+  - commitlint.config.js
+    ```js
+      module.exports = {
+          extends: ['@commitlint/config-conventional'],
+      };
+    ```
   - 校验失败给出 msg 消息模板
 
     - husky 的 commit-msg 钩子进行配置修改
