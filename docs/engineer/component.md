@@ -1,5 +1,79 @@
 # 代码风格统一
 
+- webpack babel-loader
+
+  - webpack 编译采用的是 ts-load、统一编译&校验
+
+    - babel-loader@8.2.3 调用 babel 进行编辑
+    - @babel/core@7.16.5 babel 核心包 只能转语法
+    - @babel/preset-env@7.16.5 预设集合
+    - @babel/plugin-transform-runtime@7.16.5 用于提取公共 helpers
+    - core-js@3.19.3 提供 api 转译
+    - @babel/plugin-proposal-decorators@7.16.5 提供装饰器
+    - @babel/plugin-proposal-class-properties@7.16.5 编译为宽松类型属性定义
+
+    ```js
+        npm i babel-loader@8.2.3 @babel/core@7.16.5   @babel/preset-env@7.16.5 @babel/plugin-transform-runtime@7.16.5 core-js@3.19.3  @babel/plugin-proposal-decorators@7.16.5   @babel/plugin-proposal-class-properties@7.16.5  @babel/preset-react@7.16.5 @babel/preset-typescript@7.16.5 -D
+    ```
+
+    - 问题
+
+      - @types/react 存在循环引用
+
+      ```js
+      node_modules/@types/react/index.d.ts(239,10): error TS2456: Type alias 'ReactFragment' circularly references itself.
+       <!--  @types/react-->
+      interface ReactNodeArray extends ReadonlyArray<ReactNode> {}
+      type ReactFragment = {} | Iterable<ReactNode>;
+      type ReactNode = ReactChild | ReactFragment | ReactPortal | boolean | null | undefined;
+      ```
+
+          - 查看package.json发现其依赖的typescript版本为next即最新，尝试升级typescript解决问题
+
+      - 第三方库@types/react-slick 依赖包中有依赖 @types/react:'\*',导致该依赖 node_modules 下安装了 不同版本的 @types/react
+
+      ```js
+      node_modules/@types/react-slick/node_modules/@types/react/index.d.ts(240,10): error TS2456: Type alias 'ReactNode' circularly references itself.
+      node_modules/@types/react-slick/node_modules/@types/react/index.d.ts(3100,14): error TS2300: Duplicate identifier 'LibraryManagedAttributes'.
+      ```
+
+          - 将项目的依赖设置为'*'任意版本
+          > npm3.x之后的版本中node_module采用扁平化方式安装依赖(较嵌套安装,存在代码冗余、访问路劲过长等问题)，不管直接依还是子依赖优先安装在根目录下，安装时如果已存相同版本则跳过，如果已存在不符合版本则安装在当前模块的node_modules下
+          > npm install 时5.0.x,不管package.json直接根据lock下载,存在的问题[issues 16866](https://github.com/npm/npm/issues/16866)
+          > 5.1.x版本，package.json有新版本时，会无视lock根据package.json下载最新的并更新lock，存在的问题[issue 17979](https://github.com/npm/npm/issues/17979)
+          > 5.4.2版本之后，如果只有package.json则根据package.json安装并生成lock文件，
+          > 5.4.2版本之后，如果package&lock同时存在,package有新版本，但是lock版本在package.json指定的版本范围内，会安装lock的版本
+          > 5.4.2版本之后，如果package&lock同时存在,package有新版本，但是lock版本不在package.json指定的版本范围内，会根据package版本，更新lock文件
+
+  - .babelrc 配置
+
+  ```js
+      {
+          "presets": [
+              [
+              "@babel/preset-env",
+              {
+                  "useBuiltIns": "usage",
+                  "corejs": 3
+              }
+              ],
+              "@babel/preset-react", "@babel/preset-typescript"
+          ],
+          "plugins": [
+              [
+              "@babel/plugin-transform-runtime",
+              {
+                  "corejs": false
+              }
+              ],
+              ["@babel/plugin-proposal-decorators", { "legacy": true }],
+              ["@babel/plugin-proposal-class-properties", { "legacy": true }],
+              ["import", { "libraryName": "antd", "libraryDirectory": "lib" }, "antd"]
+          ]
+      }
+
+  ```
+
 - prettier
   ```js
       npm i prettier -D
@@ -15,14 +89,39 @@
       - eslint-plugin-react-hooks 强制执行 Hooks 规则
       - @typescript-eslint/eslint-plugin
   - 问题
+
+    - 添加 rules 校验时需增加指定 parserOptions 配置
+
     ```js
         Error: Error while loading rule '@typescript-eslint/await-thenable': You have used a rule which requires parserServices to be generated. You must therefore provide a value for the "parserOptions.project" property for @typescript-eslint/parser.
     ```
-        - 指定parserOptions配置
+
+    - typescript 3.7 版本问题，upgrade >3.9 即可
+
     ```js
      checker.getTypeArguments is not a function
     ```
-        - 升级 typescript>4
+
+    - v4.2 has some breaking changes - 无法捕获 yield 表达式的类型，会抛出错误
+
+    ```js
+        D:/work/iair-web/app/api/applyChangeIairOrderFront.ts
+        TypeScript error in D:/work/iair-web/app/api/applyChangeIairOrderFront.ts(9,11):
+        'yield' expression implicitly results in an 'any' type because its containing generator lacks a return-type annotation.  TS7057
+
+            7 |   let res = null;
+            8 |   try {
+        >  9 |     res = yield axios.post('air-app', 'air/change/submit_demand', data, {
+            |           ^
+            10 |       version: '',
+            11 |       apiType: 'service',
+            12 |     });
+    ```
+
+        - 解决方案
+            - 安装 < 4.2版本
+            - 添加type
+                - [eg](https://vhudyma-blog.eu/yield-expression-implicitly-results-in-an-any-type-because-its-containing-generator-lacks-a-return-type-annotation/)
 
 - husky
   - "prepare": "husky install" 在 npm i 时会自动执行该命令，初始化 husky
@@ -137,50 +236,68 @@
     fi
     ```
 
+- eslint conflicts prettier
+
+  - 避免这个问题的一个好方法是使用 Prettier 作为 ESLint 插件
+
+  ```js
+      npm install --save-dev eslint-plugin-prettier@4.0.0
+  ```
+
+  - 用 prettier 规则
+
+  ```js
+      npm install --save-dev eslint-config-prettier@8.3.0
+  ```
+
+      - prettier置于plugin最后，用于覆盖与eslint冲突的规则
+
+  - 依然有一个问题 indent
+    - eslint & prettier 有相互独立的缩进规则，疑问?eslint-config-prettier 竟然不能屏蔽 eslint 的 indent 规则
+    - [Kai Cataldo's comment ](https://github.com/eslint/eslint/issues/10930)
+
 - .eslintrc.js
 
   ```js
-  module.exports = {
-  parser: '@typescript-eslint/parser', // 5.8.0
-  parserOptions: {
-  ecmaVersion: 2015,
-  // ECMAScript modules 模式
-  sourceType: 'module',
-  ecmaFeatures: {
-  jsx: true,
-  },
-  },
-  env: {
-  browser: true,
-  node: true,
-  commonjs: true,
-  es6: true,
-  },
-  settings: {
-  react: {
-  version: 'detect',
-  },
-  'import/extensions': ['.ts', '.tsx'],
-  },
-  plugins: ['react', 'jsx-a11y', '@typescript-eslint', 'react-hooks'],
-  extends: [
-  'eslint:recommended',
-  'plugin:@typescript-eslint/recommended',
-  'plugin:@typescript-eslint/recommended-requiring-type-checking',
-  'plugin:react-hooks/recommended',
-  ],
-  rules: {
-  //------------------------前端规范-排版格式-------------------------------
-  /\*\*
-  _ 规则 15 采取一致的空格缩进,只允许使用空格(space)进行缩进。
-  _/
-  indent: ['warn', 4],
+  /**
+   * 本规则，基于最新的华为前端开发规范，具体可见链接：
+   * http://w3.huawei.com/ipd/tsl/#!tsl_new/standard/standard.html?standardId=43549
+   */
 
+  module.exports = {
+      parser: '@typescript-eslint/parser', // 5.8.0
+      parserOptions: {
+          ecmaVersion: 2015,
+          // ECMAScript modules 模式
+          sourceType: 'module',
+          ecmaFeatures: {
+              jsx: true,
+          },
+      },
+      env: {
+          browser: true,
+          node: true,
+          commonjs: true,
+          es6: true,
+      },
+      settings: {
+          react: {
+              version: 'detect',
+          },
+          'import/extensions': ['.ts', '.tsx'],
+      },
+      plugins: ['react', 'jsx-a11y', '@typescript-eslint', 'react-hooks'],
+      extends: [
+          'eslint:recommended',
+          'plugin:@typescript-eslint/recommended',
+          'plugin:@typescript-eslint/recommended-requiring-type-checking',
+          'plugin:react-hooks/recommended',
+      ],
+      rules://------------------------前端规范-排版格式-------------------------------
       /**
        * 前端规范规则16	超长代码需要被换行
        * 规则22	每行代码应该少于120个字符（以此为准）
        */
-      'max-len': ['warn', { code: 120 }],
 
       /**
        * 建议5	方法的参数尽量在一行显示
@@ -190,10 +307,7 @@
       /**
        * 建议6	对象字面量属性超过4个, 需要都换行
        */
-      'object-property-newline': [
-        'warn',
-        { allowAllPropertiesOnSameLine: false },
-      ],
+      'object-property-newline': ['warn', { allowAllPropertiesOnSameLine: false }],
 
       /**
        * 建议7	链式调用对象方法时，一行最多调用4次，否则需要换行
@@ -380,26 +494,47 @@
        * 规则65	禁止使用较短的符号实现类型转换
        */
       'no-implicit-coercion': [
-        'error',
-        {
-          allow: ['!!'],
-        },
+          'error',
+          {
+              allow: ['!!'],
+          },
       ],
-
-  },
-  overrides: [
-  {
-  files: ['*.ts', '*.tsx'], // Your TypeScript files extension
-  parserOptions: {
-  project: ['./tsconfig.json'], // Specify it only for TypeScript files
-  },
-  },
-  ],
+      'prettier/prettier': [
+          'error',
+          {
+              endOfLine: 'auto',
+              printWidth: 120,
+              tabWidth: 4,
+          },
+      ],,
+      overrides: [
+          {
+              files: ['*.ts', '*.tsx'], // Your TypeScript files extension
+              parserOptions: {
+                  project: ['./tsconfig.json'], // Specify it only for TypeScript files
+              },
+          },
+      ],
   };
   ```
 
 - 第三方库(可信库)
 
-  ```JS
-  npm i typescript@4.5.4   eslint@7.32.0 prettier@2.4.1 husky@7.0.4 lint-staged@11.2.6 @commitlint/cli@13.2.1 @commitlint/config-conventional@13.2.0   @typescript-eslint/parser@5.8.0 eslint-plugin-react@7.27.1 eslint-plugin-babel@5.3.1 eslint-plugin-import@2.25.3 eslint-plugin-jsx-a11y@6.5.1 eslint-plugin-react-hooks@4.3.0 @typescript-eslint/eslint-plugin@5.8.0 -D
+  ```js
+   typescript@4.1.3
+   @typescript-eslint/parser@5.8.0
+   eslint-plugin-prettier@4.0.0
+   eslint-config-prettier@8.3.0
+   eslint-plugin-react@7.27.1
+   eslint-plugin-import@2.25.3
+   eslint-plugin-react-hooks@4.3.0
+   eslint-plugin-jsx-a11y@6.5.1
+   eslint@7.32.0
+   prettier@2.4.1
+   @typescript-eslint/eslint-plugin@5.8.0
+
+   @commitlint/config-conventional@13.2.0
+   @commitlint/cli@13.2.1
+   lint-staged@11.2.6
+   husky@7.0.4
   ```
