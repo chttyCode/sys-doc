@@ -90,7 +90,9 @@
 27. Tabnine AI Autocomplete for Javascript, Python, Typescript, PHP, Go, Java, Ruby & more
 28. Todo Tree
 29. Winter is Coming Theme
-
+## setting
+1. vscode窗口名设置
+ File -> Preferences -> setting 搜 ““Window: Title”” 改成：
 # window 快捷键
 
 1. 虚拟
@@ -98,3 +100,4 @@
    Win 键-Ctrl-F4：删除当前虚拟桌面。
    Win 键-Ctrl-左键：切换到相邻左侧的虚拟桌面。
    Win 键-Ctrl-右键：切换到相邻右侧的虚拟桌面。
+
