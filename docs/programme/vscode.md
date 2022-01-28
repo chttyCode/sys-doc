@@ -64,32 +64,38 @@
 1. Abracadabra, refactor this!
 2. Angular Language Service
 3. Angular Schematics
-4. Better Comments
+4. Better Comments:一款美化注释的插件，可以根据不同种类的注释，显示不同的颜色，一目了然
 5. Bookmarks
-6. Bracket Pair Colorizer 2
-7. Chinese (Simplified) (简体中文) Language Pack for Visual Studio Code
-8. Code Runner
-9. Code Spell Checker
-10. Codelf
-11. CodeMetrics
-12. ESLint
-13. GitLens — Git supercharged
-14. Issue tracker in IDE: integrates with Jira, Linear, GitHub, Slack, and more
-15. JavaScript (ES6) code snippets
-16. LeetCode
-17. Markdown Preview Enhanced
-18. NG-ALAIN Extension Pack
-19. NG-ALAIN Snippets
-20. NG-ZORRO Snippets
-21. Path Intellisense
-22. Peacock
-23. Prettier - Code formatter
-24. Project Manager
-25. Shades of Purple
-26. Stylelint
-27. Tabnine AI Autocomplete for Javascript, Python, Typescript, PHP, Go, Java, Ruby & more
-28. Todo Tree
-29. Winter is Coming Theme
+6. Bracket Pair Colorizer 2:这是一个找对象的插件，不是帮你们找对象啊，是帮你找到括号的另一半
+7. Highlight Matching Tag:这也是一个找对象的插件，找的是标签的对象
+8. Color Highlight:用于给我们代码中的颜色进行高亮展示的插件
+9. Material Icon Theme:设置文件图标的
+10. indent-rainbow:彩虹缩进，就是把代码不同的缩进展示不同的颜色
+11. Chinese (Simplified) (简体中文) Language Pack for Visual Studio Code
+12. Local History:项目根目录下会自动生成 .history 的文件夹,记得添加.gitignore，不然每次提交代码的时候就要遭重了
+13. Code Runner
+14. Code Spell Checker:检查代码中单词拼写是否正确
+15. Git History:右键单击文件选择 Git：View File History 来以列表的形式查看所有的提交记录
+16. Codelf
+17. CodeMetrics
+18. ESLint
+19. GitLens — Git supercharged:每一行代码都有上一次 git 提交的记录
+20. Issue tracker in IDE: integrates with Jira, Linear, GitHub, Slack, and more
+21. JavaScript (ES6) code snippets
+22. LeetCode
+23. Markdown Preview Enhanced
+24. NG-ALAIN Extension Pack
+25. NG-ALAIN Snippets
+26. NG-ZORRO Snippets
+27. Path Intellisense
+28. Peacock
+29. Prettier - Code formatter
+30. Project Manager
+31. Shades of Purple
+32. Stylelint
+33. Tabnine AI Autocomplete for Javascript, Python, Typescript, PHP, Go, Java, Ruby & more
+34. Todo Tree
+35. Winter is Coming Theme
 ## setting
 1. vscode窗口名设置
  File -> Preferences -> setting 搜 ““Window: Title”” 改成：
