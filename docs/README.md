@@ -1,6 +1,6 @@
 ---
 home: true
-tagline: 书以启智,技于谋生
+tagline: 学如逆水行舟、不进则退
 actionText: 开始阅读 →
 actionLink: /programme/
 features:

@@ -76,6 +76,7 @@ module.exports = {
             "/programme/browser-5",
             "/programme/browser-6",
             "/programme/browser-7",
+            "/programme/browser-8",
           ],
         },
         "/programme/v8.md",
