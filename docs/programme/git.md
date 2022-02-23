@@ -1,6 +1,6 @@
 # git 操作
 
-1. 配置查看
+## 配置查看
 
 - config 配置指令
 
@@ -26,7 +26,7 @@ git config --global  --list
 git config --local  --list
 ```
 
-2. SSH 免密与 Token 登录配置
+## SSH 免密与 Token 登录配置
 
 - ssh
   - 查看 ssh 目录
@@ -53,7 +53,7 @@ git config --local  --list
     git remote set-url origin https://<TOKEN>@github.com/<user_name>/<repo_name>.git
   ```
 
-3. commit 撤销
+## commit 撤销
 
 - 查看提交记录
   ```js
@@ -101,14 +101,14 @@ git config --local  --list
   > revert 创建新的提交点，以撤销之前提交的更改，不改变历史提交记录
   > reset 根据不同的操作会修改历史提交记录
 
-4. git add 撤回
+## git add 撤回
 
 ```js
 <!-- 用库里文件直接覆盖暂存区 -->
   git reset <file>
 ```
 
-5. 分支同步
+## 分支同步
 
 - fork 远程分支
   - fork 到本地不改分支名
@@ -154,7 +154,7 @@ git config --local  --list
 git push <远程主机名> <本地分支名>:<远程分支名>
 ```
 
-6. 好用常用的命令
+## 好用常用的命令
 
 - 使用一次新的 commit，替代上一次提交
   - 提交文案不改变
