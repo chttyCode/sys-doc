@@ -85,28 +85,28 @@
 
 #### 渲染流程
 
-    > 渲染过程的核心工作是将 HTML、CSS 和 JavaScript 转换成一个用户可以交互的网页,主要有主线程、工作线程、合成线程、光栅线程组成
+> 渲染过程的核心工作是将 HTML、CSS 和 JavaScript 转换成一个用户可以交互的网页,主要有主线程、工作线程、合成线程、光栅线程组成
 
-    ![alt 多进程架构图](/sys-doc/imgs/renderer.png)
+![alt 多进程架构图](/sys-doc/imgs/renderer.png)
 
-    - DOM 解析
+- DOM 解析
 
-      - 接受到浏览器进程的提交文档通知后，建立与网络进程的数据连接、开始接受 html Data、但是 HTML 数据流，无法被浏览器识别，需根据 [HTML Standard](https://html.spec.whatwg.org/) 标准进行解析转为能够识别 DOM 树结构、DOM 结构可以被浏览器识别同时提供 javascript 操作的接口
+  - 接受到浏览器进程的提交文档通知后，建立与网络进程的数据连接、开始接受 html Data、但是 HTML 数据流，无法被浏览器识别，需根据 [HTML Standard](https://html.spec.whatwg.org/) 标准进行解析转为能够识别 DOM 树结构、DOM 结构可以被浏览器识别同时提供 javascript 操作的接口
 
-      ![alt 多进程架构图](/sys-doc/imgs/dom.png)
+  ![alt 多进程架构图](/sys-doc/imgs/dom.png)
 
-      - DOM 解析过程中遇到 script 会中断等待 javascript 的下载执行
-      - DOM 解析过程可以对 css 设置预解析<link rel="preload">,对 js 可以设置 async or defer 避免中断 DOM 解析
+  - DOM 解析过程中遇到 script 会中断等待 javascript 的下载执行
+  - DOM 解析过程可以对 css 设置预解析<link rel="preload">,对 js 可以设置 async or defer 避免中断 DOM 解析
 
-    - 样式计算
-      - 同样需要主线程把 CSS 转换为浏览器能够理解的 styleSheets。因为 css 中的属性值有很多除了转换结构，还需转换样式表中的属性值，使其标准化，eg:2em 被解析成了 32px，red 被解析成了 rgb(255,0,0)，bold 被解析成了 700，根据 dom 的继承关系、层叠关系来计算合理的样式
-    - 布局阶段
+- 样式计算
+  - 同样需要主线程把 CSS 转换为浏览器能够理解的 styleSheets。因为 css 中的属性值有很多除了转换结构，还需转换样式表中的属性值，使其标准化，eg:2em 被解析成了 32px，red 被解析成了 rgb(255,0,0)，bold 被解析成了 700，根据 dom 的继承关系、层叠关系来计算合理的样式
+- 布局阶段
 
-      - 有了 DOM 树和样式还不足以画出页面，因为不知道每个元素纪在页面中的几何位置
-      - 主线程根据 DOM 树和样式表计算出每个元素的几何位置，最后生产布局树，布局树较 DOM 有 2 个不同点：第一设置 display:none 属性的节点不会出现在布局树上，第二伪元素也会出现在布局树上
-      - 任务几何属性的变动都会引起重新布局，而重布局是及其消耗性能的工作
+  - 有了 DOM 树和样式还不足以画出页面，因为不知道每个元素纪在页面中的几何位置
+  - 主线程根据 DOM 树和样式表计算出每个元素的几何位置，最后生产布局树，布局树较 DOM 有 2 个不同点：第一设置 display:none 属性的节点不会出现在布局树上，第二伪元素也会出现在布局树上
+  - 任务几何属性的变动都会引起重新布局，而重布局是及其消耗性能的工作
 
-    - 绘制
+- 绘制
 
 - 交互演进
   - 单进程
