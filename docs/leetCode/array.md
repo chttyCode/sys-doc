@@ -76,7 +76,51 @@ sidebarDepth: 2
   - 25
 
 - test
-  - 26 ✅ => 80 ✅
+
+  - 26 ✅
+
+  ```js
+    <!-- 双指针:i 记录不重复位置 j遍历指针 -->
+
+    var removeDuplicates = function (nums) {
+    let i = 0;
+    for (let j = 0; j < nums.length; j++) {
+        if (nums[i] !== nums[j]) {
+        nums[++i] = nums[j];
+        }
+    }
+    return i + 1;
+    };
+
+    <!-- 记数,记录重复的个数 -->
+    var removeDuplicates = function (nums) {
+    let n = 0;
+    for (let j = 1; j < nums.length; j++) {
+        if (nums[j - 1] === nums[j]) {
+        n++;
+        } else {
+        nums[j - n] = nums[j];
+        }
+    }
+    return nums.length - n;
+    };
+  ```
+
+  - 80 ✅
+
+  ```js
+    <!-- 双指针,i 记录可重复2次有序位置，与有序数组的倒数第二个做对比 -->
+    var removeDuplicates = function (nums) {
+    let i = 0;
+    for (let j = 0; j < nums.length; j++) {
+        if (j < 2 || nums[j] > nums[j - 2]) {
+        nums[i++] = nums[j];
+        }
+    }
+    return i;
+    };
+  ```
+
   - 189
   - 21
   - 88
