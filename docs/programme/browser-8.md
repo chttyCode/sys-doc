@@ -126,7 +126,7 @@
 
 - 同样需要主线程把 CSS 转换为浏览器能够理解的 styleSheets。因为 css 中的属性值有很多除了转换结构，还需转换样式表中的属性值，使其标准化，eg:2em 被解析成了 32px，red 被解析成了 rgb(255,0,0)，bold 被解析成了 700，根据 dom 的继承关系、层叠关系来计算合理的样式
 - 计算出 DOM 树中每个节点的具体样式，涉及继承合层叠规则
-- [chrome 默认样式](chrome https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css)
+- [chrome 默认样式](https://source.chromium.org/chromium/chromium/src/+/main:third_party/blink/renderer/core/html/resources/html.css)
   ![alt dom](/sys-doc/imgs/computedstyle.png)
 
 ##### 布局阶段
@@ -134,6 +134,7 @@
 - 有了 DOM 树和样式还不足以画出页面，因为不知道每个元素纪在页面中的几何位置
 - 主线程根据 DOM 树和样式表计算出每个元素的几何位置，最后生成布局树，布局树较 DOM 树 有 2 个不同点：第一设置 display:none 属性的节点不会出现在布局树上，第二伪元素也会出现在布局树上
 - 任务几何属性的变动都会引起重新布局，而重布局是及其消耗性能的工作
+  ![alt 布局](/sys-doc/imgs/lay_out.png)
 
 ##### 分层
 
@@ -142,13 +143,14 @@
   - 产生图层
     - 拥有独立上下文[层叠上下文](https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Positioning/Understanding_z_index/The_stacking_context)
     - 发生内容裁减
-      ![alt dom](/sys-doc/imgs/layer.png)
+      ![alt 分层](/sys-doc/imgs/layer.png)
 
 ##### 绘制
 
 - 会把一个图层的绘制拆分成很多小的绘制指令，eg:画图的步骤，先画什么再画什么
 - 将绘制指令按绘制顺序组成待绘制列表
-  ![alt dom](/sys-doc/imgs/paint.png)
+
+  ![alt 绘制](/sys-doc/imgs/paint.png)
 
 ##### 栅格化
 
