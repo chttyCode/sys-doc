@@ -166,3 +166,9 @@ git push <远程主机名> <本地分支名>:<远程分支名>
   ```js
     git commit --amend --no-edit(对已提交的且已push的commit 不好用)
   ```
+- git stash
+  - git stash save "save message":存储 stash 时 msg
+  - git stash apply : 应用某个存储点 git stash apply stash@{$num} ，  比如第二个：git stash apply stash@{1}，不删除缓存
+  - git stash pop ：应用所有存储点，并删除缓存
+  - 对新增文件 git stash 无法识别，可以先 add 进行追踪再存储
+
