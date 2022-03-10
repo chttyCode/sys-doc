@@ -171,4 +171,16 @@ git push <远程主机名> <本地分支名>:<远程分支名>
   - git stash apply : 应用某个存储点 git stash apply stash@{$num} ，  比如第二个：git stash apply stash@{1}，不删除缓存
   - git stash pop ：应用所有存储点，并删除缓存
   - 对新增文件 git stash 无法识别，可以先 add 进行追踪再存储
-
+- 分支重命名 local&remote
+  - 切到要重命名的分支
+  ```js
+    git checkout branch_to_rename
+  ```
+  - 重命名当前分支
+  ```js
+    git branch -m new_name
+  ```
+  - 推到远端
+  ```js
+    git push origin :old_name new_name
+  ```
