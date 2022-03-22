@@ -121,9 +121,75 @@ sidebarDepth: 2
     };
   ```
 
-  - 189
-  - 21
-  - 88
-  - 1
-  - 283
-  - 66
+- 189
+  > 向右平移数组
+
+```js
+// 粗暴解法：截取-拼接
+var rotate = function (nums, k) {
+  k %= nums.length;
+  nums.unshift(...nums.splice(nums.length - k));
+};
+
+// 翻转
+
+var rotate = function (nums, k) {
+  k %= nums.length;
+  reverse(nums, 0, nums.length - 1);
+  reverse(nums, 0, k - 1);
+  reverse(nums, k, nums.length - 1);
+};
+
+let reverse = function (nums, start, end) {
+  while (start < end) {
+    [nums[start++], nums[end--]] = [nums[end], nums[start]];
+  }
+};
+```
+
+- 21
+  > 合并两有链表
+
+```js
+// 递归
+var mergeTwoLists = function (l1, l2) {
+  //  递归终结条件
+  if (l1 === null) {
+    return l2;
+  } else if (l2 === null) {
+    return l1;
+  }
+  //   处理当前层
+  if (l1.val < l2.val) {
+    //  下探
+    l1.next = mergeTwoLists(l1.next, l2);
+    return l1;
+  } else {
+    //  下探
+    l2.next = mergeTwoLists(l1, l2.next);
+    return l2;
+  }
+};
+// 递推
+var mergeTwoLists = function (l1, l2) {
+  //  创建空节点
+  const head = new ListNode();
+  let current = head;
+  while (l1 !== null && l2 !== null) {
+    if (l1.val < l2.val) {
+      current.next = l1;
+      l1 = l1.next;
+    } else {
+      current.next = l2;
+      l2 = l2.next;
+    }
+  }
+  current.next = l1 === null ? l2 : l1;
+  return head.next;
+};
+```
+
+- 88
+- 1
+- 283
+- 66
