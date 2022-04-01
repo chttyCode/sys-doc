@@ -156,16 +156,21 @@ git push <远程主机名> <本地分支名>:<远程分支名>
 
 ## 好用常用的命令
 
-- 使用一次新的 commit，替代上一次提交
+- 使用一次新的 commit，替代上一次提交、不新增commit 记录，对已提交的需要强制push
   - 提交文案不改变
   ```js
      <!-- 按照提示修改信息就行啦 -->
      git commit --amend
   ```
+  - 简写改变
+  ```js
+    git commit --amend --only -m 'xxxxxxx'
+  ```
   - 改变提交文案
   ```js
     git commit --amend --no-edit(对已提交的且已push的commit 不好用)
   ```
+  
 - git stash
   - git stash save "save message":存储 stash 时 msg
   - git stash apply : 应用某个存储点 git stash apply stash@{$num} ，  比如第二个：git stash apply stash@{1}，不删除缓存
