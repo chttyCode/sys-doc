@@ -190,6 +190,45 @@ var mergeTwoLists = function (l1, l2) {
 ```
 
 - 88
+```js
+<!-- 双指针 顺序 时间复杂度：O(n) 空间复杂度O(n)：1. 想到了双指针 2. 没有建立copy数组，导致取值有问题 3. 双指针比较大小 -->
+  var merge = function (nums1, m, nums2, n) {
+  let copyNums1 = nums1.slice();
+  let len = m + n;
+  let x = (y = 0);
+  for (let i = 0; i < len; i++) {
+    let cur;
+    if (y >= n) {
+      cur = copyNums1[x++];
+    } else if (x >= m) {
+      cur = nums2[y++];
+    } else if (copyNums1[x] > nums2[y]) {
+      cur = nums2[y++];
+    } else {
+      cur = copyNums1[x++];
+    }
+    nums1[i] = cur;
+  }
+};
+<!-- 双指针 逆序优势不用拷贝数组 时间复杂度O(n),控件复杂度O(1) -->
+var merge = function (nums1, m, nums2, n) {
+  let len = m + n;
+  let x = m - 1,
+    y = n - 1;
+  for (let i = len - 1; i >= 0; i--) {
+    if (y < 0) {
+      cur = nums1[x--];
+    } else if (x < 0) {
+      cur = nums2[y--];
+    } else if (nums1[x] > nums2[y]) {
+      cur = nums1[x--];
+    } else {
+      cur = nums2[y--];
+    }
+    nums1[i] = cur;
+  }
+};
+```
 - 1
 - 283
 - 66
