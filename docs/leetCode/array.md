@@ -228,6 +228,19 @@ var merge = function (nums1, m, nums2, n) {
     nums1[i] = cur;
   }
 };
+<!-- 甚是妙哉，因为是有序且是nums2 mergeto nums1 所以只需关注nums2是否已合入 -->
+var merge = function (nums1, m, nums2, n) {
+  let len = m + n - 1;
+  let x = m - 1;
+  let y = n - 1;
+  while (y >= 0) {
+    if (x < 0 || nums2[y] >= nums1[x]) {
+      nums1[len--] = nums2[y--];
+    } else {
+      nums1[len--] = nums1[x--];
+    }
+  }
+};
 ```
 - 1
 - 283
