@@ -189,3 +189,12 @@ git push <远程主机名> <本地分支名>:<远程分支名>
   ```js
     git push origin :old_name new_name
   ```
+  
+  
+  ## git 找回删除分支
+
+- 查找 commitId
+  > 只要提交过产生 commitId,在本地 git 的 log 历史中依然是存在的
+  > git log -g
+- 根据 commitId 创建新分分支
+  git branch branch_Name commitId
