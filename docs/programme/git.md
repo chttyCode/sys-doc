@@ -195,6 +195,10 @@ git push <远程主机名> <本地分支名>:<远程分支名>
 
 - 查找 commitId
   > 只要提交过产生 commitId,在本地 git 的 log 历史中依然是存在的
-  > git log -g
+  ```js
+  git log -g
+  ``` 
 - 根据 commitId 创建新分分支
-  git branch branch_Name commitId
+  ```js
+    git branch branch_Name commitId
+  ```
