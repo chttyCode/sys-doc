@@ -243,5 +243,19 @@ var merge = function (nums1, m, nums2, n) {
 };
 ```
 - 1
+```js
+<!-- 双循环 -->
+<!--  hashMap -->
+var twoSum = function (nums, target) {
+  const mapV = {};
+  for (let i = 0; i < nums.length; i++) {
+    if (mapV[nums[i]] === 0 || mapV[nums[i]]) {
+      return [mapV[nums[i]], i];
+    } else {
+      mapV[target - nums[i]] = i;
+    }
+  }
+};
+```
 - 283
 - 66
