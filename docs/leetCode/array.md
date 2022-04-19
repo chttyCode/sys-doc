@@ -257,5 +257,38 @@ var twoSum = function (nums, target) {
   }
 };
 ```
+-15
+```js
+<!-- 三数之和 1. 三数之和等于0 循环+双指针,2.去重，条件判断*逻辑要清晰 -->
+function threeSum(nums){
+const result = [];
+  nums.sort((a, b) => a - b);
+  for (let i = 0; i < nums.length; i++) {
+    let left = i + 1;
+    let right = nums.length - 1;
+    if (nums[i] > 0) break;
+    if (nums[i] === nums[i - 1]) continue;
+    while (left < right) {
+      let sum = nums[i] + nums[left] + nums[right];
+      if (sum === 0) {
+        result.push([nums[i], nums[left], nums[right]]);
+        while (left < right && nums[left] === nums[left + 1]) {
+          left++;
+        }
+        while (left < right && nums[right] === nums[right - 1]) {
+          right--;
+        }
+        left++;
+        right--;
+      } else if (sum < 0) {
+        left = left + 1;
+      } else {
+        right = right - 1;
+      }
+    }
+  }
+  return result;
+}
+```
 - 283
 - 66
