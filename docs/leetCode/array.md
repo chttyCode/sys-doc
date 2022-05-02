@@ -126,21 +126,21 @@ sidebarDepth: 2
 
 ```js
 // 粗暴解法：截取-拼接
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   k %= nums.length;
   nums.unshift(...nums.splice(nums.length - k));
 };
 
 // 翻转
 
-var rotate = function (nums, k) {
+var rotate = function(nums, k) {
   k %= nums.length;
   reverse(nums, 0, nums.length - 1);
   reverse(nums, 0, k - 1);
   reverse(nums, k, nums.length - 1);
 };
 
-let reverse = function (nums, start, end) {
+let reverse = function(nums, start, end) {
   while (start < end) {
     [nums[start++], nums[end--]] = [nums[end], nums[start]];
   }
@@ -152,7 +152,7 @@ let reverse = function (nums, start, end) {
 
 ```js
 // 递归
-var mergeTwoLists = function (l1, l2) {
+var mergeTwoLists = function(l1, l2) {
   //  递归终结条件
   if (l1 === null) {
     return l2;
@@ -171,7 +171,7 @@ var mergeTwoLists = function (l1, l2) {
   }
 };
 // 递推
-var mergeTwoLists = function (l1, l2) {
+var mergeTwoLists = function(l1, l2) {
   //  创建空节点
   const head = new ListNode();
   let current = head;
@@ -190,6 +190,7 @@ var mergeTwoLists = function (l1, l2) {
 ```
 
 - 88
+
 ```js
 <!-- 双指针 顺序 时间复杂度：O(n) 空间复杂度O(n)：1. 想到了双指针 2. 没有建立copy数组，导致取值有问题 3. 双指针比较大小 -->
   var merge = function (nums1, m, nums2, n) {
@@ -242,7 +243,9 @@ var merge = function (nums1, m, nums2, n) {
   }
 };
 ```
+
 - 1
+
 ```js
 <!-- 双循环 -->
 <!--  hashMap -->
@@ -257,7 +260,9 @@ var twoSum = function (nums, target) {
   }
 };
 ```
+
 -15
+
 ```js
 <!-- 三数之和 1. 三数之和等于0 循环+双指针,2.去重，条件判断*逻辑要清晰 -->
 function threeSum(nums){
@@ -290,5 +295,74 @@ const result = [];
   return result;
 }
 ```
-- 283
+
+- 283:零移问题
+
+```js
+// 暴力解法：遇零删除，最后补零，顺序遍历，遇零删除是需要将下标回退
+var moveZeroes = function(nums) {
+  let j = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === 0) {
+      nums.splice(i, 1);
+      i--;
+      j++;
+    }
+  }
+
+  while (j > 0) {
+    nums.push(0);
+    j--;
+  }
+};
+```
+
+```js
+// 暴力逆序遍历，较顺序遍历的优点是无需对下标进行回退操作，时间复杂度、操作依然复杂
+var moveZeroes = function(nums) {
+  let j = 0;
+  for (let i = nums.length - 1; i >= 0; i--) {
+    if (nums[i] === 0) {
+      nums.splice(i, 1);
+      j++;
+    }
+  }
+  while (j > 0) {
+    nums.push(0);
+    j--;
+  }
+};
+```
+
+```js
+// 双指针法，数组常用操作，时间复杂度O(n)，依然需要进行补零操作
+var moveZeroes = function(nums) {
+  let j = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] !== 0) {
+      nums[j++] = nums[i];
+    }
+  }
+  while (nums.length - j > 0) {
+    nums[j++] = 0;
+  }
+};
+```
+
+```js
+// 号称滚雪球操作，较双指针法时间复杂度相同，思想有区别，会统计0的个数，进行滚动
+var moveZeroes = function(nums) {
+  let snow = 0;
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] === 0) {
+      snow++;
+    } else if (snow > 0) {
+      // 滚动雪球
+      nums[i - snow] = nums[i];
+      nums[i] = 0;
+    }
+  }
+};
+```
+
 - 66
