@@ -366,3 +366,33 @@ var moveZeroes = function(nums) {
 ```
 
 - 66
+
+```js
+<!--错误的想法进入了死胡同，暴力解题无果、先入为主的思想就是找相关性、找规律只要后一位是0,当前位置就加1，但是陷入了边界条件的判断在中了，还有就是都进一位，数组长度加1的场景直接把我赶崩溃了  -->
+var plusOne = function (digits) {
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let cur = digits[i];
+
+    digits[i] =
+      (cur + (digits[i + 1] === 0 || i === digits.length - 1 ? 1 : 0)) % 10;
+  }
+  return digits;
+};
+```
+
+```js
+<!-- 暴力无果，确实存在前后两位的相关性，但是重点分析后一位即可完成需求-->
+var plusOne = function (digits) {
+  for (let i = digits.length - 1; i >= 0; i--) {
+    if (digits[i] === 9) {
+      digits[i] = 0;
+    } else {
+      digits[i] += 1;
+      return digits;
+    }
+  }
+  digits.unshift("1");
+  return digits;
+};
+
+```
