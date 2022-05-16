@@ -61,8 +61,10 @@
   - 存在的问题
     - 包含了大量的 then 函数
 - async/await
+
   - 在不阻塞的情况下，使用同步的方式访问异步资源，使得代码逻辑更加清晰
   - javascript 是如何实现 async&await 的
+
     - 生成器 VS 协程
       - 生产器
         - 带星号的函数，可以暂停执行、恢复执行
@@ -88,3 +90,23 @@
       - 暂停当前协程执行，将 promise 返回给父协程
       - 父协程调用 promise\_.then 来监控 promise 状态的改变
       - 该回调函数被激活以后，会将主线程的控制权交给 foo 函数的协程，并同时将 value 值传给该协程。
+
+    通过 CO 的栗子来看，async/await 的语法糖
+
+  ```js
+  function CO(gen) {
+    return new Promise((resolve, reject) => {
+      const it = gen();
+      function next(it, value) {
+        const { done, value: v } = it.next(value);
+        if (done) {
+          return resolve(v);
+        }
+        Promise.resolve(v).then((res) => {
+          next(it, res);
+        });
+      }
+      next(it);
+    });
+  }
+  ```
