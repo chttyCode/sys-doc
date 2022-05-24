@@ -193,14 +193,176 @@ chrome 的合成又是怎么做的呢？
 
 交互阶段桢的生成主要由重排、重绘、合成三中方式
 
+##### 减少 JS 大函数，减少长时间霸占主线程
+
+##### 避免出现强制布局，可以通过 performance,观察布局是否在函数执行过程中发生
+
+###### 正常布局
+
 ![alt 正常布局](/sys-doc/imgs/normal.png)
+
+###### 强制布局
+
+```js
+function foo() {
+  let main_div = document.getElementById("mian_div");
+  let new_node = document.createElement("li");
+  let textnode = document.createTextNode("time.geekbang");
+  new_node.appendChild(textnode);
+  document.getElementById("mian_div").appendChild(new_node);
+  //由于要获取到offsetHeight，
+  //但是此时的offsetHeight还是老的数据，
+  //所以需要立即执行布局操作
+  console.log(main_div.offsetHeight);
+}
+```
+
 ![alt 强制布局](/sys-doc/imgs/force.png)
+
+###### 抖动布局
+
+```js
+function foo() {
+  let time_li = document.getElementById("time_li");
+  for (let i = 0; i < 100; i++) {
+    let main_div = document.getElementById("mian_div");
+    let new_node = document.createElement("li");
+    let textnode = document.createTextNode("time.geekbang");
+    new_node.appendChild(textnode);
+    new_node.offsetHeight = time_li.offsetHeight;
+    document.getElementById("mian_div").appendChild(new_node);
+  }
+}
+```
+
 ![alt 抖动布局](/sys-doc/imgs/debounce.png)
+
+##### 利用 css 做合成动画
+
+##### 避免频繁的垃圾回收
 
 #### 卸载阶段
 
+主要处理一些清理动作
+
 ### 虚拟 DOM
+
+首先虚拟 DOM 是因为真是的 DOM 更新存在重排、重绘、合成等牵一发而动全身的渲染流程，很是浪费性能，这种渲染模式对一些大型单页应用网站来说局部的更新是非常糟糕的
+
+虚拟 DOM 可以优化 DOM 的操作，对操作行为做过滤&合并
 
 ### 渐进式
 
+#### 浏览器的三大演进路线
+
+应用程序 web 化
+
+web 应用移动化
+
+web 操作系统化
+
+google 一致致力于多端一统
+
+#### web 应用 vs 本地应用
+
+1. Web 应用缺少离线使用能力，在离线或者在弱网环境下基本上是无法使用
+2. Web 应用还缺少了消息推送的能力
+3. Web 应用缺少一级入口，也就是将 Web 应用安装到桌面，在需要的时候直接从桌面打开 Web 应用，而不是每次都需要通过浏览器来打开。
+
+#### 解决方案 PWA（Progressive Web App）
+
+通过技术手段缩小与本地应用的差距
+
+通过引入 Service Worker 来试着解决离线存储和消息推送的问题
+
+通过引入 manifest.json 来解决一级入口的问题
+
+Google 没有类似微信或者 Facebook、apple 这种体量的用户群体,PWA 推行起来十分缓慢，即本文也不做深入探究
+
 ### webComponent
+
+前面所有的知识点都是站在浏览器整个渲染、应用的角度，而这个 webComponent 却是站在了业务开发的角度去看问题
+
+业务开发对组件化有着天然的渴求，因为组件化可以降低沟通、易于维护。众多的便能语言也都能提供组件化的封装能力，包括 JS
+
+那什么是组件化，即一块高内聚、低耦合的代码。
+
+但是 web 要天然支持组件化却是有难度的，从渲染流水线来看 DOM、CSSOM 都是全局的没办法去做私有化的隔离
+
+#### 解决方案 webComponent
+
+webComponent 是一套组合技术 Custom elements（自定义元素）、Shadow DOM（影子 DOM）和 HTML templates（HTML 模板）
+
+通过影子 DOM 的方式实现了 DOM、CSSOM 的隔离，但是影子 DOM 内的 Js 是不会被隔离的
+
+#### 栗子
+
+```html
+<!DOCTYPE html>
+<html>
+  <body>
+    <!--
+            一：定义模板
+            二：定义内部CSS样式
+            三：定义JavaScript行为
+    -->
+    <template id="geekbang-t">
+      <style>
+        p {
+          background-color: brown;
+          color: cornsilk;
+        }
+
+        div {
+          width: 200px;
+          background-color: bisque;
+          border: 3px solid chocolate;
+          border-radius: 10px;
+        }
+      </style>
+      <div>
+        <p>time.geekbang.org</p>
+        <p>time1.geekbang.org</p>
+      </div>
+      <script>
+        function foo() {
+          console.log("inner log");
+        }
+      </script>
+    </template>
+    <script>
+      class GeekBang extends HTMLElement {
+        constructor() {
+          super();
+          //获取组件模板
+          const content = document.querySelector("#geekbang-t").content;
+          //创建影子DOM节点
+          const shadowDOM = this.attachShadow({ mode: "open" });
+          //将模板添加到影子DOM上
+          shadowDOM.appendChild(content.cloneNode(true));
+        }
+      }
+      customElements.define("geek-bang", GeekBang);
+    </script>
+
+    <geek-bang></geek-bang>
+    <div>
+      <p>time.geekbang.org</p>
+      <p>time1.geekbang.org</p>
+    </div>
+    <geek-bang></geek-bang>
+  </body>
+</html>
+```
+
+#### 浏览器是如何实现的
+
+影子 DOM 中的元素对于整个网页是不可见的；
+
+影子 DOM 的 CSS 不会影响到整个网页的 CSSOM，影子 DOM 内部的 CSS 只对内部的元素起作
+
+![alt 强制布局](/sys-doc/imgs/shadow-dom.png)
+
+每个影子 DOM 都有一个 shadow root 的根节点,将要展示的样式或者元素添加到影子 DOM 的根节点上，每个影子 DOM 你都可以看成是一个独立的 DOM，它有自己的样式、自己的属性，内部样式不会影响到外部样式，外部样式也不会影响到内部样式
+
+浏览器生成 DOM 树、CSSOM、布局树的时候都会去做大量的判断，跳过 shadow root 这样的影子 DOM
