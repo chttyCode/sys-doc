@@ -122,6 +122,83 @@ chrome 的合成又是怎么做的呢？
 
 ### 页面性能
 
+想要系统的优化页面的性能，就要从页面的生命周期去思考，看看每一个阶段那些会造成性能的浪费
+
+页面的生命周期主要分三个阶段
+
+#### 加载阶段
+
+这个阶段主要就是结合渲染流水线分析，分析关键资源，即 css、html、js，像图片、视频、音频都是非关键资源不会阻塞页面的渲染，也不会影响关键资源的加载所以可以不用关注
+
+![alt 加载阶段](/sys-doc/imgs/loading.png)
+
+##### 关键资源影响因素分析
+
+关键资源的个数
+关键资源的大小
+请求往返的延时，表示从发送端发送数据开始，到发送端收到来自接收端的确认，总共经历的时延。通常一个 http 数据包 14kb
+
+##### 关键资源优化
+
+减少关键资源个数：合并资源，可以采用内联，压缩，对于 CSSOM、DOM 操作的 JS 可以设置 async 或者 defer 属性，同样对于 css 也可以采用媒体查询
+
+```html
+<link
+  rel="stylesheet"
+  href="./index.css"
+  media="none"
+  onload="this.media='all'"
+/>
+```
+
+这样浏览器将会异步加载这个 CSS 文件（优先度比较低），在加载完毕之后，使用 onload 属性将 link 的媒体类型设置为 all，然后便开始渲染。
+
+```html
+<link
+  rel="stylesheet"
+  href="./index1.css"
+  media="screen and (max-width: 800px)"
+/>
+<link
+  rel="stylesheet"
+  href="./index2.css"
+  media="screen and (min-width: 800px)"
+/>
+```
+
+刷新页面时，如果视窗宽度小于 800px，那么优先加载 index1.css，如果大于 800px，则相反：
+
+提前加载资源
+
+```html
+<link
+  rel="preload"
+  href="./index.css"
+  as="style"
+  onload="this.rel='stylesheet'"
+/>
+```
+
+这个跟上述类似，但是优先级是最高的，不过还是异步加载，不会阻塞 DOM 的渲染
+
+##### 减小关键资源大小
+
+可以压缩 CSS 和 JavaScript 资源，移除 HTML、CSS、JavaScript 文件中一些注释内容
+
+##### 减少关键资源 RTT 的次数
+
+以通过减少关键资源的个数和减少关键资源，还可以使用 CDN
+
+#### 交互执行阶段
+
+交互阶段桢的生成主要由重排、重绘、合成三中方式
+
+![alt 正常布局](/sys-doc/imgs/normal.png)
+![alt 强制布局](/sys-doc/imgs/force.png)
+![alt 抖动布局](/sys-doc/imgs/debounce.png)
+
+#### 卸载阶段
+
 ### 虚拟 DOM
 
 ### 渐进式
