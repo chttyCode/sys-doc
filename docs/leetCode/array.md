@@ -385,6 +385,34 @@ var mergeTwoLists = function(l1, l2) {
   current.next = l1 === null ? l2 : l1;
   return head.next;
 };
+<!-- 主要区别于递推1的场景、融合了特殊情况的判断，还是方案1逻辑更为清晰易懂 -->
+var mergeTwoLists = function (list1, list2) {
+  const head = new ListNode();
+  let pre = head;
+  while (list1 || list2) {
+    if (list1 === null) {
+      pre.next = list2;
+      list2 = list2.next;
+      pre = pre.next;
+      break;
+    }
+    if (list2 === null) {
+      pre.next = list1;
+      list1 = list1.next;
+      pre = pre.next;
+      break;
+    }
+    if (list1.val < list2.val) {
+      pre.next = list1;
+      list1 = list1.next;
+    } else {
+      pre.next = list2;
+      list2 = list2.next;
+    }
+    pre = pre.next;
+  }
+  return head;
+};
 ```
 
 - 206
