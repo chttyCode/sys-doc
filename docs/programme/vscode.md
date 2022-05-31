@@ -96,6 +96,8 @@
 33. Tabnine AI Autocomplete for Javascript, Python, Typescript, PHP, Go, Java, Ruby & more
 34. Todo Tree
 35. Winter is Coming Theme
+36. CSS Peek
+37. Version Lens
 ## setting
 1. vscode窗口名设置
  File -> Preferences -> setting 搜 ““Window: Title”” 改成：
