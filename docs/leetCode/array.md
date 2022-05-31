@@ -416,6 +416,33 @@ var mergeTwoLists = function (list1, list2) {
 ```
 
 - 206
+
+> 递归，跟普通的递归有些区别，正常的都是1. 终结条件 2.处理当前层 3. 下探到下一层 4. 变量清楚 
+```js
+function reverseList(head){
+   // 递归终结条件
+  if(head===null || head.next ===null){return head}
+  // 下探都下一层
+  const newHead=reverseList(head.next)
+  head.next.next = head
+  head.next=null
+  return newHead
+}
+```
+> 递推，有些类似双指针
+```js
+function reverseList(head){
+  let pre=null
+  while(head){
+    const next = head.next;
+    head.next=pre
+    pre=head;
+    head=next
+  }
+  return pre
+}
+```
+
 - 24
 - 141
 - 142
