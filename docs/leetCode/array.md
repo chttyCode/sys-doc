@@ -345,8 +345,7 @@ var plusOne = function (digits) {
 
 ## 链表习
 
-- 21
-  > 合并两有链表
+- 21：合并两有链表
 
 ```js
 // 递归
@@ -415,35 +414,168 @@ var mergeTwoLists = function (list1, list2) {
 };
 ```
 
-- 206
+- 206:翻转链表
 
-> 递归，跟普通的递归有些区别，正常的都是1. 终结条件 2.处理当前层 3. 下探到下一层 4. 变量清楚 
+> 递归，跟普通的递归有些区别，正常的都是 1. 终结条件 2.处理当前层 3. 下探到下一层 4. 变量清除
+
 ```js
-function reverseList(head){
-   // 递归终结条件
-  if(head===null || head.next ===null){return head}
-  // 下探都下一层
-  const newHead=reverseList(head.next)
-  head.next.next = head
-  head.next=null
-  return newHead
-}
-```
-> 递推，有些类似双指针
-```js
-function reverseList(head){
-  let pre=null
-  while(head){
-    const next = head.next;
-    head.next=pre
-    pre=head;
-    head=next
+function reverseList(head) {
+  // 递归终结条件
+  if (head === null || head.next === null) {
+    return head;
   }
-  return pre
+  // 下探都下一层
+  const newHead = reverseList(head.next);
+  head.next.next = head;
+  head.next = null;
+  return newHead;
 }
 ```
 
-- 24
-- 141
-- 142
-- 25
+> 递推，有些类似双指针
+
+```js
+function reverseList(head) {
+  let pre = null;
+  while (head) {
+    const next = head.next;
+    head.next = pre;
+    pre = head;
+    head = next;
+  }
+  return pre;
+}
+```
+
+- 24：链表两两翻转
+
+```js
+// 递推，构建一个两两翻转的前节点出来，注意翻转的节奏
+var swapPairs = function(head) {
+  const pre = new ListNode();
+  pre.next = head;
+  let temp = pre;
+  while (temp.next !== null && temp.next.next !== null) {
+    let first = temp.next;
+    let second = temp.next.next;
+    // 从头开始翻转
+    temp.next = second;
+    first.next = second.next;
+    second.next = first;
+    temp = first;
+  }
+  return pre.next;
+};
+```
+
+```js
+// 递归 想清楚当前循环需要做什么即可
+var swapPairs = function(head) {
+  // 递归终结条件
+  if (head === null || head.next === null) {
+    return head;
+  }
+
+  // 处理当前层,将第二个及其以后的节点看成一个
+  let next = head.next;
+  head.next = swapPairs(next.next);
+  next.next = head;
+
+  return next;
+};
+```
+
+- 141：链表是否存在环
+
+```js
+// 哈希表解法
+var hasCycle = function(head) {
+  const seen = new WeakSet();
+  while (head !== null) {
+    if (seen.has(head)) {
+      return true;
+    }
+    seen.add(head);
+    head = head.next;
+  }
+  return false;
+};
+```
+
+```js
+//双指针 1
+var hasCycle = function(head) {
+  if (head === null || head.next === null) {
+    return false;
+  }
+  let slow = head;
+  let first = head.next;
+  while (slow !== first) {
+    if (fast == null || fast.next == null) {
+      return false;
+    }
+    first = first.next.next;
+    slow = slow.next;
+  }
+  return true;
+};
+
+// 双指针2
+var hasCycle = function(head) {
+  if (head == null || head.next == null) {
+    return false;
+  }
+  let slow = head;
+  let fast = head.next;
+  while (fast !== null) {
+    fast = fast.next;
+    if (fast !== null) {
+      fast = fast.next;
+    }
+    if (fast == slow) {
+      return true;
+    }
+    slow = slow.next;
+  }
+  return false;
+};
+```
+
+- 链表中倒数第 k 个节点
+
+```js
+// 顺利遍历即可
+var getKthFromEnd = function(head, k) {
+  let node = head,
+    n = 0;
+  while (node) {
+    node = node.next;
+    n++;
+  }
+  node = head;
+  for (let i = 0; i < n - k; i++) {
+    node = node.next;
+  }
+  return node;
+};
+```
+
+```js
+// 快慢指针，先定位快指针位置，在同步快慢指针一起走
+var getKthFromEnd = function(head, k) {
+  let fast = head,
+    slow = head;
+
+  while (fast && k > 0) {
+    [fast, k] = [fast.next, k - 1];
+  }
+  while (fast) {
+    [fast, slow] = [fast.next, slow.next];
+  }
+  return slow;
+};
+```
+
+- 142:链表环的开始节点位置
+- 876: 链表的中间结点
+- - 25: K 个一组翻转链表
