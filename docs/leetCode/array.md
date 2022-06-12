@@ -577,5 +577,114 @@ var getKthFromEnd = function(head, k) {
 ```
 
 - 142:链表环的开始节点位置
+
+```js
+//hash简单易懂
+var detectCycle = function(head) {
+  const nodeSet = new WeakSet();
+  while (head) {
+    if (nodeSet.has(head)) {
+      return head;
+    }
+    nodeSet.add(head);
+    head = head.next;
+  }
+  return null;
+};
+```
+
+```js
+// 从快慢指针的所走路径进行分析得到结论，第一次相遇之后，环节点与开头、相遇点的关系得出
+var detectCycle = function(head) {
+  let fast = head;
+  let slow = head;
+  while (true) {
+    if (fast === null || fast.next === null) {
+      return null;
+    }
+    fast = fast.next.next;
+    slow = slow.next;
+    if (fast === slow) {
+      break;
+    }
+  }
+  fast = head;
+  while (fast !== slow) {
+    fast = fast.next;
+    slow = slow.next;
+  }
+  return fast;
+};
+```
+
 - 876: 链表的中间结点
-- - 25: K 个一组翻转链表
+
+```js
+// 精妙之处在于利用下标，避免奇偶问题
+var middleNode = function(head) {
+  let A = [head];
+  while (A[A.length - 1].next != null) A.push(A[A.length - 1].next);
+  return A[Math.trunc(A.length / 2)];
+};
+```
+
+```js
+// 单指针
+var middleNode = function(head) {
+  n = 0;
+  cur = head;
+  while (cur != null) {
+    ++n;
+    cur = cur.next;
+  }
+  k = 0;
+  cur = head;
+  while (k < Math.trunc(n / 2)) {
+    ++k;
+    cur = cur.next;
+  }
+  return cur;
+};
+```
+
+- 25: K 个一组翻转链表
+
+```js
+function reverse(head, tail) {
+  let prev = tail.next;
+  let p = head;
+  while (prev != tail) {
+    let next = p.next;
+    p.next = pre;
+    pre = p;
+    p = next;
+  }
+
+  return [tail, head];
+}
+
+function reverseKGroup(head, k) {
+  const hair = new ListNode(0);
+  hair.next = head;
+  let pre = hair;
+  while (head) {
+    let tail = pre;
+    // 判断k长度，确定尾节点
+    for (let i = 0; i < k; ++i) {
+      tail = tail.next;
+      if (!tail) {
+        return hair.next;
+      }
+    }
+    const nex = tail.next;
+    //
+    [head, tail] = myReverse(head, tail);
+    // 把子链表重新接回原链表
+    pre.next = head;
+    tail.next = nex;
+    pre = tail;
+    head = tail.next;
+  }
+  return hair.next;
+}
+```
