@@ -32,10 +32,253 @@
 
 # 习题
 
-- 20
+- 20 有效括号
+  > 算法一致，但 js 的执行时间比较长
+
+```js
+// 正则时间较长
+var isValid = function(s) {
+  let reg = /\(\)|\{\}|\[\]/g;
+  while (reg.test(s)) {
+    s = s.replace(reg, "");
+  }
+  return !s.length;
+};
+// 栈的方式:时间复杂度O(n^2)
+var isValid = function() {
+  let left = [];
+  let map = {
+    "[": "]",
+    "(": ")",
+    "{": "}",
+  };
+  for (let i = 0; i < s.length; i++) {
+    const key = s[i];
+    if (map[key]) {
+      left.push(key);
+    } else {
+      if (map[left.pop()] !== key) {
+        return false;
+      }
+    }
+  }
+  return !s.length;
+};
+// 栈的方式
+var isValid = function(s) {
+  let stack = [];
+  for (let i = 0; i < s.length; i++) {
+    const key = s[i];
+    if (key === ")" && stack[stack.length - 1] === "(") {
+      stack.pop();
+    } else if (key === "]" && stack[stack.length - 1] === "[") {
+      stack.pop();
+    } else if (key === "}" && stack[stack.length - 1] === "{") {
+      stack.pop();
+    } else {
+      stack.push(key);
+    }
+  }
+  return !stack.length;
+};
+```
+
 - 155
+  > 最小栈，想法都是入栈排队，但是入站排队分两种方式，1.每次对最小栈进行排序，2.对最小栈入栈不再排序而是比较新入栈对与栈顶元素对大小，重点就是对 push 和 top 的方式不同
+
+```js
+var MinStack = function() {
+  this.stack = [];
+  this.orderStack = [Infinity];
+};
+
+/**
+ * @param {number} val
+ * @return {void}
+ */
+MinStack.prototype.push = function(val) {
+  this.stack.push(val);
+  this.orderStack.push(
+    Math.min(this.orderStack[this.orderStack.length - 1], x)
+  );
+  return val;
+};
+
+/**
+ * @return {void}
+ */
+MinStack.prototype.pop = function() {
+  const val = this.stack.pop();
+  this.orderStack.pop();
+  return val;
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.top = function() {
+  return this.stack[this.stack.length - 1];
+};
+
+/**
+ * @return {number}
+ */
+MinStack.prototype.getMin = function() {
+  return this.orderStack[this.orderStack.length - 1];
+};
+```
+
 - 232
+  > 用栈实现队列，栈只能一端出入，而队列只能开头出栈，结尾入栈
+
+```js
+// 用一个栈去承载结果
+var MyQueue = function() {
+  this.leftStack = [];
+  this.rightStack = [];
+};
+
+/**
+ * @param {number} x
+ * @return {void}
+ */
+MyQueue.prototype.push = function(x) {
+  let top;
+  while ((top = this.leftStack.pop())) {
+    this.rightStack.push(top);
+  }
+  this.leftStack.push(x);
+  while ((top = this.rightStack.pop())) {
+    this.leftStack.push(top);
+  }
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.pop = function() {
+  let val = this.leftStack[this.leftStack.length - 1];
+  this.leftStack.length -= 1;
+  return val;
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.peek = function() {
+  return this.leftStack[this.leftStack.length - 1];
+};
+
+/**
+ * @return {boolean}
+ */
+MyQueue.prototype.empty = function() {
+  return !this.leftStack.length;
+};
+
+// 用两个栈去承载结果，这样就要把保证两栈的数据同步
+// 用栈实现队列
+var MyQueue = function() {
+  // stack
+  let leftStack = [];
+  let rightStack = [];
+};
+
+/**
+ * @param {number} x
+ * @return {void}
+ */
+MyQueue.prototype.push = function(x) {
+  this.leftStack.push(x);
+  this.rightStack.unshift(x);
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.pop = function() {
+  this.rightStack.pop();
+  return this.leftStack.shift();
+};
+
+/**
+ * @return {number}
+ */
+MyQueue.prototype.peek = function() {
+  return this.leftStack[0];
+};
+
+/**
+ * @return {boolean}
+ */
+MyQueue.prototype.empty = function() {
+  return !this.leftStack.length;
+};
+```
+
 - 844
+  > 比较含退格的字符串，现在看到这个题目第一个想法就是栈，第二个就是 remove0 的滚雪球解法
+  > ，第三个可以理解为倒叙的滚雪球
+
+```js
+// 栈的解法，O(n+m)的时间复杂度
+var backspaceCompare = function(s, t) {
+  let sStack = [];
+  let tStack = [];
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === "#") {
+      sStack.pop();
+    } else {
+      sStack.push(s[i]);
+    }
+  }
+  for (let t = 0; i < t.length; i++) {
+    if (t[i] === "#") {
+      tStack.pop();
+    } else {
+      tStack.push(t[i]);
+    }
+  }
+  return s.join() === t.join();
+};
+
+// 滚雪球解法，字符串不可改，所以用数组承载新的结果
+function removeD(str) {
+  let slow = 0;
+  let newStr = [];
+  for (let fast = 0; fast < str.length; fast++) {
+    if (str[fast] !== "#") {
+      newStr[slow++] = str[fast];
+    } else if (slow > 0) {
+      slow--;
+    }
+  }
+  return newStr.slice(0, slow).join();
+}
+return removeD(s) === removeD(t);
+
+// 我理解为倒叙的滚雪球，同样有字符串的拼接
+var backspaceCompare = function(s, t) {
+  function removeD(str) {
+    let newStr = "";
+    let backCount = 0;
+    for (let fast = str.length - 1; fast >= 0; fast--) {
+      if (str[fast] === "#") {
+        backCount++;
+      } else {
+        if (backCount === 0) {
+          newStr += str[fast];
+        } else {
+          backCount--;
+        }
+      }
+    }
+    return newStr;
+  }
+  return removeD(s) === removeD(t);
+};
+```
+
 - 224
 - 682
 - 496
