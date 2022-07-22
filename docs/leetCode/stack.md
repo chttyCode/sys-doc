@@ -355,6 +355,24 @@ function calc(s) {
 
 - 682
 - 496
+```js
+<!-- 下一个更大的一类问题，可暴力解，但是单调栈是更优解，小细节1.倒叙遍历，2.过滤比当前值小的 -->
+function nextGreaterElement(nums1, nums2) {
+  const stack = [];
+  const retMap = {};
+  for (let i = nums2.length - 1; i >= 0; i--) {
+    if (stack.length && stack[stack.length - 1] < nums2[i]) {
+      stack.pop();
+    }
+    retMap[nums2[i]] = stack.length ? stack[stack.length - 1] : -1;
+    stack.push(nums2[i]);
+  }
+  for (i = 0; i < nums1.length; i++) {
+    nums1[i] = retMap[nums1[i]];
+  }
+  return nums1;
+}
+```
 - 84
 - 239
 - 649
