@@ -2,7 +2,7 @@
 sidebarDepth: 2
 ---
 
-# 数组定义
+# 数组
 
 - 定义：是一种线性表结构数据、使用连续内存、存储类型选相同的数据
   - 线性表(可以类比线性方程),即一条直线，特点是每个数据只有前后关系
@@ -30,193 +30,218 @@ sidebarDepth: 2
 
 - 11 ✅
 
-```js
-  <!-- 盛水最多 -->
-  <!-- 1. 暴力解法、时间O(n^2) 空间O(1)-->
-  <!-- 2. 双指针左右夹逼:向内移动短板 时间O(n) 空间O(1)-->
+  > 盛最多水的容器-找出其中的两条线，使得它们与 x 轴共同构成的容器可以容纳最多的水
 
-  <!-- 三元写法 -->
-  res = height[i] < height[j] ?
-      Math.max(res, (j - i) * height[i++]):
-      Math.max(res, (j - i) * height[j--]);
-```
+  ```js
+    <!-- 盛水最多 -->
+    <!-- 1. 暴力解法、时间O(n^2) 空间O(1)-->
+    <!-- 2. 双指针左右夹逼:向内移动短板 时间O(n) 空间O(1)-->
 
-- 26 ✅
+    <!-- 三元写法 -->
+    res = height[i] < height[j] ?
+        Math.max(res, (j - i) * height[i++]):
+        Math.max(res, (j - i) * height[j--]);
+  ```
 
-```js
-  <!-- 双指针:i 记录不重复位置 j遍历指针 -->
+- 70
 
-  var removeDuplicates = function (nums) {
-  let i = 0;
-  for (let j = 0; j < nums.length; j++) {
-      if (nums[i] !== nums[j]) {
-      nums[++i] = nums[j];
-      }
-  }
-  return i + 1;
-  };
+  > 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
 
-  <!-- 记数,记录重复的个数 -->
-  var removeDuplicates = function (nums) {
-  let n = 0;
-  for (let j = 1; j < nums.length; j++) {
-      if (nums[j - 1] === nums[j]) {
-      n++;
-      } else {
-      nums[j - n] = nums[j];
-      }
-  }
-  return nums.length - n;
-  };
-```
-
-- 80 ✅
-
-```js
-  <!-- 双指针,i 记录可重复2次有序位置，与有序数组的倒数第二个做对比 -->
-  var removeDuplicates = function (nums) {
-  let i = 0;
-  for (let j = 0; j < nums.length; j++) {
-      if (j < 2 || nums[j] > nums[j - 2]) {
-      nums[i++] = nums[j];
-      }
-  }
-  return i;
-  };
-```
-
-- 189 ✅
-  > 向右平移数组
-
-```js
-// 粗暴解法：截取-拼接
-var rotate = function(nums, k) {
-  k %= nums.length;
-  nums.unshift(...nums.splice(nums.length - k));
-};
-
-// 翻转
-
-var rotate = function(nums, k) {
-  k %= nums.length;
-  reverse(nums, 0, nums.length - 1);
-  reverse(nums, 0, k - 1);
-  reverse(nums, k, nums.length - 1);
-};
-
-let reverse = function(nums, start, end) {
-  while (start < end) {
-    [nums[start++], nums[end--]] = [nums[end], nums[start]];
-  }
-};
-```
-
-- 88 ✅
-
-```js
-<!-- 双指针 顺序 时间复杂度：O(n) 空间复杂度O(n)：1. 想到了双指针 2. 没有建立copy数组，导致取值有问题 3. 双指针比较大小 -->
-  var merge = function (nums1, m, nums2, n) {
-  let copyNums1 = nums1.slice();
-  let len = m + n;
-  let x = (y = 0);
-  for (let i = 0; i < len; i++) {
-    let cur;
-    if (y >= n) {
-      cur = copyNums1[x++];
-    } else if (x >= m) {
-      cur = nums2[y++];
-    } else if (copyNums1[x] > nums2[y]) {
-      cur = nums2[y++];
-    } else {
-      cur = copyNums1[x++];
-    }
-    nums1[i] = cur;
-  }
-};
-<!-- 双指针 逆序优势不用拷贝数组 时间复杂度O(n),控件复杂度O(1) -->
-var merge = function (nums1, m, nums2, n) {
-  let len = m + n;
-  let x = m - 1,
-    y = n - 1;
-  for (let i = len - 1; i >= 0; i--) {
-    if (y < 0) {
-      cur = nums1[x--];
-    } else if (x < 0) {
-      cur = nums2[y--];
-    } else if (nums1[x] > nums2[y]) {
-      cur = nums1[x--];
-    } else {
-      cur = nums2[y--];
-    }
-    nums1[i] = cur;
-  }
-};
-<!-- 甚是妙哉，因为是有序且是nums2 mergeto nums1 所以只需关注nums2是否已合入 -->
-var merge = function (nums1, m, nums2, n) {
-  let len = m + n - 1;
-  let x = m - 1;
-  let y = n - 1;
-  while (y >= 0) {
-    if (x < 0 || nums2[y] >= nums1[x]) {
-      nums1[len--] = nums2[y--];
-    } else {
-      nums1[len--] = nums1[x--];
-    }
-  }
-};
-```
+  ```js
+  /**
+   * @param {number} n
+   * @return {number}
+   */
+  var climbStairs = function(n) {};
+  ```
 
 - 1 ✅
 
-```js
-<!-- 双循环 -->
-<!--  hashMap -->
-var twoSum = function (nums, target) {
-  const mapV = {};
-  for (let i = 0; i < nums.length; i++) {
-    if (mapV[nums[i]] === 0 || mapV[nums[i]]) {
-      return [mapV[nums[i]], i];
-    } else {
-      mapV[target - nums[i]] = i;
-    }
-  }
-};
-```
+  > 给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
 
--15 ✅
-
-```js
-<!-- 三数之和 1. 三数之和等于0 循环+双指针,2.去重，条件判断*逻辑要清晰 -->
-function threeSum(nums){
-const result = [];
-  nums.sort((a, b) => a - b);
-  for (let i = 0; i < nums.length; i++) {
-    let left = i + 1;
-    let right = nums.length - 1;
-    if (nums[i] > 0) break;
-    if (nums[i] === nums[i - 1]) continue;
-    while (left < right) {
-      let sum = nums[i] + nums[left] + nums[right];
-      if (sum === 0) {
-        result.push([nums[i], nums[left], nums[right]]);
-        while (left < right && nums[left] === nums[left + 1]) {
-          left++;
-        }
-        while (left < right && nums[right] === nums[right - 1]) {
-          right--;
-        }
-        left++;
-        right--;
-      } else if (sum < 0) {
-        left = left + 1;
+  ```js
+  <!-- 双循环 -->
+  <!--  hashMap -->
+  var twoSum = function (nums, target) {
+    const mapV = {};
+    for (let i = 0; i < nums.length; i++) {
+      if (mapV[nums[i]] === 0 || mapV[nums[i]]) {
+        return [mapV[nums[i]], i];
       } else {
-        right = right - 1;
+        mapV[target - nums[i]] = i;
       }
     }
+  };
+  ```
+
+- 15 ✅
+
+  > 三数之和
+
+  ```js
+  <!-- 三数之和 1. 三数之和等于0 循环+双指针,2.去重，条件判断*逻辑要清晰 -->
+  function threeSum(nums){
+  const result = [];
+    nums.sort((a, b) => a - b);
+    for (let i = 0; i < nums.length; i++) {
+      let left = i + 1;
+      let right = nums.length - 1;
+      if (nums[i] > 0) break;
+      if (nums[i] === nums[i - 1]) continue;
+      while (left < right) {
+        let sum = nums[i] + nums[left] + nums[right];
+        if (sum === 0) {
+          result.push([nums[i], nums[left], nums[right]]);
+          while (left < right && nums[left] === nums[left + 1]) {
+            left++;
+          }
+          while (left < right && nums[right] === nums[right - 1]) {
+            right--;
+          }
+          left++;
+          right--;
+        } else if (sum < 0) {
+          left = left + 1;
+        } else {
+          right = right - 1;
+        }
+      }
+    }
+    return result;
   }
-  return result;
-}
-```
+  ```
+
+- 26 ✅
+
+  > 给你一个 升序排列 的数组 nums ,请你 原地 删除重复出现的元素，使每个元素 只出现一次 ，返回删除后数组的新长度。元素的 相对顺序 应该保持 一致 。
+
+  ```js
+    <!-- 双指针:i 记录不重复位置 j遍历指针 -->
+
+    var removeDuplicates = function (nums) {
+    let i = 0;
+    for (let j = 0; j < nums.length; j++) {
+        if (nums[i] !== nums[j]) {
+        nums[++i] = nums[j];
+        }
+    }
+    return i + 1;
+    };
+
+    <!-- 记数,记录重复的个数 -->
+    var removeDuplicates = function (nums) {
+    let n = 0;
+    for (let j = 1; j < nums.length; j++) {
+        if (nums[j - 1] === nums[j]) {
+        n++;
+        } else {
+        nums[j - n] = nums[j];
+        }
+    }
+    return nums.length - n;
+    };
+  ```
+
+- 80 ✅
+
+  > 给你一个有序数组 nums ，请你 原地 删除重复出现的元素，使得出现次数超过两次的元素只出现两次 ，返回删除后数组的新长度。
+
+  ```js
+    <!-- 双指针,i 记录可重复2次有序位置，与有序数组的倒数第二个做对比 -->
+    var removeDuplicates = function (nums) {
+    let i = 0;
+    for (let j = 0; j < nums.length; j++) {
+        if (j < 2 || nums[j] > nums[j - 2]) {
+        nums[i++] = nums[j];
+        }
+    }
+    return i;
+    };
+  ```
+
+- 189 ✅
+
+  > 给你一个数组，将数组中的元素向右轮转 k 个位置，其中 k 是非负数。
+
+  ```js
+  // 粗暴解法：截取-拼接
+  var rotate = function(nums, k) {
+    k %= nums.length;
+    nums.unshift(...nums.splice(nums.length - k));
+  };
+
+  // 翻转
+
+  var rotate = function(nums, k) {
+    k %= nums.length;
+    reverse(nums, 0, nums.length - 1);
+    reverse(nums, 0, k - 1);
+    reverse(nums, k, nums.length - 1);
+  };
+
+  let reverse = function(nums, start, end) {
+    while (start < end) {
+      [nums[start++], nums[end--]] = [nums[end], nums[start]];
+    }
+  };
+  ```
+
+- 88 ✅
+
+  > 合并有序数组，给你两个按 非递减顺序 排列的整数数组 nums1 和 nums2，另有两个整数 m 和 n ，分别表示 nums1 和 nums2 中的元素数目。
+
+  ```js
+  <!-- 双指针 顺序 时间复杂度：O(n) 空间复杂度O(n)：1. 想到了双指针 2. 没有建立copy数组，导致取值有问题 3. 双指针比较大小 -->
+    var merge = function (nums1, m, nums2, n) {
+    let copyNums1 = nums1.slice();
+    let len = m + n;
+    let x = (y = 0);
+    for (let i = 0; i < len; i++) {
+      let cur;
+      if (y >= n) {
+        cur = copyNums1[x++];
+      } else if (x >= m) {
+        cur = nums2[y++];
+      } else if (copyNums1[x] > nums2[y]) {
+        cur = nums2[y++];
+      } else {
+        cur = copyNums1[x++];
+      }
+      nums1[i] = cur;
+    }
+  };
+  <!-- 双指针 逆序优势不用拷贝数组 时间复杂度O(n),控件复杂度O(1) -->
+  var merge = function (nums1, m, nums2, n) {
+    let len = m + n;
+    let x = m - 1,
+      y = n - 1;
+    for (let i = len - 1; i >= 0; i--) {
+      if (y < 0) {
+        cur = nums1[x--];
+      } else if (x < 0) {
+        cur = nums2[y--];
+      } else if (nums1[x] > nums2[y]) {
+        cur = nums1[x--];
+      } else {
+        cur = nums2[y--];
+      }
+      nums1[i] = cur;
+    }
+  };
+  <!-- 甚是妙哉，因为是有序且是nums2 mergeto nums1 所以只需关注nums2是否已合入 -->
+  var merge = function (nums1, m, nums2, n) {
+    let len = m + n - 1;
+    let x = m - 1;
+    let y = n - 1;
+    while (y >= 0) {
+      if (x < 0 || nums2[y] >= nums1[x]) {
+        nums1[len--] = nums2[y--];
+      } else {
+        nums1[len--] = nums1[x--];
+      }
+    }
+  };
+  ```
 
 - 283:零移问题 ✅
 
@@ -289,37 +314,37 @@ var moveZeroes = function(nums) {
 
 - 66 ✅
 
-```js
-<!--错误的想法进入了死胡同，暴力解题无果、先入为主的思想就是找相关性、找规律只要后一位是0,当前位置就加1，但是陷入了边界条件的判断在中了，还有就是都进一位，数组长度加1的场景直接把我赶崩溃了  -->
-var plusOne = function (digits) {
-  for (let i = digits.length - 1; i >= 0; i--) {
-    let cur = digits[i];
+  > 给定一个由 整数 组成的 非空 数组所表示的非负整数，在该数的基础上加一。
 
-    digits[i] =
-      (cur + (digits[i + 1] === 0 || i === digits.length - 1 ? 1 : 0)) % 10;
-  }
-  return digits;
-};
-```
+  ```js
+  <!--错误的想法进入了死胡同，暴力解题无果、先入为主的思想就是找相关性、找规律只要后一位是0,当前位置就加1，但是陷入了边界条件的判断在中了，还有就是都进一位，数组长度加1的场景直接把我赶崩溃了  -->
+  var plusOne = function (digits) {
+    for (let i = digits.length - 1; i >= 0; i--) {
+      let cur = digits[i];
 
-```js
-<!-- 暴力无果，确实存在前后两位的相关性，但是重点分析后一位即可完成需求-->
-var plusOne = function (digits) {
-  for (let i = digits.length - 1; i >= 0; i--) {
-    if (digits[i] === 9) {
-      digits[i] = 0;
-    } else {
-      digits[i] += 1;
-      return digits;
+      digits[i] =
+        (cur + (digits[i + 1] === 0 || i === digits.length - 1 ? 1 : 0)) % 10;
     }
-  }
-  digits.unshift("1");
-  return digits;
-};
+    return digits;
+  };
+  ```
 
-```
+  ```js
+  <!-- 暴力无果，确实存在前后两位的相关性，但是重点分析后一位即可完成需求-->
+  var plusOne = function (digits) {
+    for (let i = digits.length - 1; i >= 0; i--) {
+      if (digits[i] === 9) {
+        digits[i] = 0;
+      } else {
+        digits[i] += 1;
+        return digits;
+      }
+    }
+    digits.unshift("1");
+    return digits;
+  };
 
-- 70
+  ```
 
 # 链表定义
 
@@ -345,107 +370,109 @@ var plusOne = function (digits) {
 
 ## 链表习
 
-- 21：合并两有链表
+- 21
 
-```js
-// 递归
-var mergeTwoLists = function(l1, l2) {
-  //  递归终结条件
-  if (l1 === null) {
-    return l2;
-  } else if (l2 === null) {
-    return l1;
-  }
-  //   处理当前层
-  if (l1.val < l2.val) {
-    //  下探
-    l1.next = mergeTwoLists(l1.next, l2);
-    return l1;
-  } else {
-    //  下探
-    l2.next = mergeTwoLists(l1, l2.next);
-    return l2;
-  }
-};
-// 递推
-var mergeTwoLists = function(l1, l2) {
-  //  创建空节点
-  const head = new ListNode();
-  let current = head;
-  while (l1 !== null && l2 !== null) {
+  > 合并两有链表
+
+  ```js
+  // 递归
+  var mergeTwoLists = function(l1, l2) {
+    //  递归终结条件
+    if (l1 === null) {
+      return l2;
+    } else if (l2 === null) {
+      return l1;
+    }
+    //   处理当前层
     if (l1.val < l2.val) {
-      current.next = l1;
-      l1 = l1.next;
+      //  下探
+      l1.next = mergeTwoLists(l1.next, l2);
+      return l1;
     } else {
-      current.next = l2;
-      l2 = l2.next;
+      //  下探
+      l2.next = mergeTwoLists(l1, l2.next);
+      return l2;
     }
-  }
-  current.next = l1 === null ? l2 : l1;
-  return head.next;
-};
-<!-- 主要区别于递推1的场景、融合了特殊情况的判断，还是方案1逻辑更为清晰易懂 -->
-var mergeTwoLists = function (list1, list2) {
-  const head = new ListNode();
-  let pre = head;
-  while (list1 || list2) {
-    if (list1 === null) {
-      pre.next = list2;
-      list2 = list2.next;
+  };
+  // 递推
+  var mergeTwoLists = function(l1, l2) {
+    //  创建空节点
+    const head = new ListNode();
+    let current = head;
+    while (l1 !== null && l2 !== null) {
+      if (l1.val < l2.val) {
+        current.next = l1;
+        l1 = l1.next;
+      } else {
+        current.next = l2;
+        l2 = l2.next;
+      }
+    }
+    current.next = l1 === null ? l2 : l1;
+    return head.next;
+  };
+  <!-- 主要区别于递推1的场景、融合了特殊情况的判断，还是方案1逻辑更为清晰易懂 -->
+  var mergeTwoLists = function (list1, list2) {
+    const head = new ListNode();
+    let pre = head;
+    while (list1 || list2) {
+      if (list1 === null) {
+        pre.next = list2;
+        list2 = list2.next;
+        pre = pre.next;
+        break;
+      }
+      if (list2 === null) {
+        pre.next = list1;
+        list1 = list1.next;
+        pre = pre.next;
+        break;
+      }
+      if (list1.val < list2.val) {
+        pre.next = list1;
+        list1 = list1.next;
+      } else {
+        pre.next = list2;
+        list2 = list2.next;
+      }
       pre = pre.next;
-      break;
     }
-    if (list2 === null) {
-      pre.next = list1;
-      list1 = list1.next;
-      pre = pre.next;
-      break;
-    }
-    if (list1.val < list2.val) {
-      pre.next = list1;
-      list1 = list1.next;
-    } else {
-      pre.next = list2;
-      list2 = list2.next;
-    }
-    pre = pre.next;
-  }
-  return head;
-};
-```
+    return head;
+  };
+  ```
 
 - 206:翻转链表
 
-> 递归，跟普通的递归有些区别，正常的都是 1. 终结条件 2.处理当前层 3. 下探到下一层 4. 变量清除
+  > 递归，跟普通的递归有些区别，正常的都是 1. 终结条件 2.处理当前层 3. 下探到下一层 4. 变量清除
 
-```js
-function reverseList(head) {
-  // 递归终结条件
-  if (head === null || head.next === null) {
-    return head;
+  ```js
+  function reverseList(head) {
+    // 递归终结条件
+    if (head === null || head.next === null) {
+      return head;
+    }
+    // 下探都下一层
+    const newHead = reverseList(head.next);
+    head.next.next = head;
+    head.next = null;
+    return newHead;
   }
-  // 下探都下一层
-  const newHead = reverseList(head.next);
-  head.next.next = head;
-  head.next = null;
-  return newHead;
-}
-```
+  ```
 
-> 递推，有些类似双指针
+  > 递推，有些类似双指针
 
-```js
-function reverseList(head) {
-  let pre = null;
-  while (head) {
-    const next = head.next;
-    head.next = pre;
-    pre = head;
-    head = next;
+  ```js
+  function reverseList(head) {
+    let pre = null;
+    while (head) {
+      const next = head.next;
+      head.next = pre;
+      pre = head;
+      head = next;
+    }
+    return pre;
   }
-  return pre;
-}
-```
+  ```
 
 - 24：链表两两翻转
 

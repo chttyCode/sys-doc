@@ -1,7 +1,3 @@
----
-sidebarDepth: 2
----
-
 # LeetCode
 
 ## 概述
