@@ -279,9 +279,100 @@ var backspaceCompare = function(s, t) {
 };
 ```
 
-- 224
+- 224 基本计算
+  > 难点是都能想到栈，但是优先级的细节怎么处理 确实分水岭，也是难点所在
+
+```js
+// 方案一纵观全局分析，括号的存在会改变符号
+function calc(s) {
+  let sign = 1;
+  let ops = [1];
+  let i = 0;
+  let ret = 0;
+  while (i < s.length) {
+    if (s[i] === " ") {
+      i++;
+    } else if (s[i] === "+") {
+      sign = ops[ops.length - 1];
+      i++;
+    } else if (s[i] === "-") {
+      sign = -ops[ops.length - 1];
+      i++;
+    } else if (s[i] === "(") {
+      ops.push(sign);
+      i++;
+    } else if (s[i] === ")") {
+      ops.pop();
+      i++;
+    } else {
+      let num = 0;
+      while (s[i] !== " " && i < s.length && !isNaN(Number(s[i]))) {
+        num = num * 10 + s[i].charCodeAt() - "0".charCodeAt();
+        i++;
+      }
+      ret += sign * num;
+    }
+  }
+  return ret;
+}
+
+// 方案二顺序思维解题
+function calc(s) {
+  let sign = 1;
+  let ret = 0;
+  let stack = [];
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === " ") {
+      i++;
+    } else if (s[i] !== " " && !isNaN(s[i])) {
+      let num = 0;
+      while (s[i] !== " " && i < s.length && !isNaN(Number(s[i]))) {
+        num = num * 10 + s[i].charCodeAt() - "0".charCodeAt();
+        i++;
+      }
+      ret += sign * num;
+    } else if (s[i] === "+") {
+      sign = 1;
+      i++;
+    } else if (s[i] === "-") {
+      sign = -1;
+      i++;
+    } else if (s[i] === "(") {
+      stack.push(ret);
+      stack.push(sign);
+      ret = 0;
+      sign = 1;
+      i++;
+    } else if (s[i] === ")") {
+      ret = ret * stack.pop() + stack.pop();
+      i++;
+    }
+  }
+  return ret;
+}
+```
+
 - 682
 - 496
+```js
+<!-- 下一个更大的一类问题，可暴力解，但是单调栈是更优解，小细节1.倒叙遍历，2.过滤比当前值小的 -->
+function nextGreaterElement(nums1, nums2) {
+  const stack = [];
+  const retMap = {};
+  for (let i = nums2.length - 1; i >= 0; i--) {
+    if (stack.length && stack[stack.length - 1] < nums2[i]) {
+      stack.pop();
+    }
+    retMap[nums2[i]] = stack.length ? stack[stack.length - 1] : -1;
+    stack.push(nums2[i]);
+  }
+  for (i = 0; i < nums1.length; i++) {
+    nums1[i] = retMap[nums1[i]];
+  }
+  return nums1;
+}
+```
 - 84
 - 239
 - 649

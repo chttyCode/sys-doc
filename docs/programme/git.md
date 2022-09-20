@@ -202,3 +202,30 @@ git push <远程主机名> <本地分支名>:<远程分支名>
   ```js
     git branch branch_Name commitId
   ```
+  
+ ## git 删除已merge 分支
+  > grep | xargs 是 linux 提供的命令，首先要了解一下 linux 的 KISS 理念，即一个命令只做一件事，但是为了协同多任务有提供了管道符，xargs 配合管道符，将上一个管道的流，作为下个命令的参数, -v 参数输出不包含指定模式的行
+  
+  ```js
+        git branch | grep -v "main" | xargs git branch -D
+  ```
+### 别名配置
+
+```JS
+$ vim ~/.gitconfig
+...
+// [alias]
+//     # compare:
+//     foo = "! echo begin arg=$1/$2/end"
+//     foo2 = "!f() { echo "begin arg=$1/$2/end"; }; f"
+// 1. !f() { 为自执行函数 2. -D 可以删除未合并的分支，-d会抛出error中断操作
+// git操作常用别名设置https://gist.github.com/natescode/aed203bb2826628993a67dfadb22302a
+br-clean = "!f() {git branch | grep -v "master\|main" | xargs git branch -D }; f"
+```
+### 配置别名执行指定 bash 脚本
+
+```js
+// https://stackoverflow.com/questions/1309430/how-to-embed-bash-script-directly-inside-a-git-alias
+// 'diffall.sh' into your $PATH anyway,
+git config --global alias.diffall '!sh diffall.sh'
+```
