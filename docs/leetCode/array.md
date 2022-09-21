@@ -43,16 +43,56 @@ sidebarDepth: 2
         Math.max(res, (j - i) * height[j--]);
   ```
 
-- 70
+- 70 ✅
 
   > 假设你正在爬楼梯。需要 n 阶你才能到达楼顶。每次你可以爬 1 或 2 个台阶。你有多少种不同的方法可以爬到楼顶呢？
+  > 分治是一种思想，实现分治的方式可以是递归、递推。
+  > 可以使用分治的条件是存在子问题，切子问题的解决方式相同
 
   ```js
   /**
    * @param {number} n
    * @return {number}
+   * 存在子问题
+   * 子问题解决方案相同
+   * 存在边界条件
    */
-  var climbStairs = function(n) {};
+  var climbStairs = function(n) {
+    if(n<=2)return n
+    return climbStairs(n-1) + climbStairs(n-2)
+  };
+  
+  // 分治的递推实现
+  function climStarts(n){
+    if (n <= 2) return n;
+    let f1 = 1;
+    let f2 = 2;
+    let f3 = f2 + f1;
+    let i = 3;
+    while (i <= n) {
+      f3 = f2 + f1;
+      f1 = f2;
+      f2 = f3;
+      i++;
+    }
+    return f3;
+  }
+  
+  // 构造数组实现分治递推
+  function climbStairs(n) {
+    if (n <= 2) return n;
+    const arr = new Array(n);
+    arr[0] = 1;
+    arr[1] = 2;
+    let i = 2;
+    while (i < n) {
+      arr[i] = arr[i - 1] + arr[i - 2];
+      i++;
+    }
+    return arr[arr.length - 1];
+  }
+
+  
   ```
 
 - 1 ✅
