@@ -11,5 +11,5 @@ features:
   - title: 生活
     details: 怒则气上 喜则气缓 思则气结 悲则气消 恐则气下 忧则气凝 惊则气乱
 
-footer: MIT Licensed | Copyright © 2021-chtty
+footer: Copyright © 2021-chtty
 ---

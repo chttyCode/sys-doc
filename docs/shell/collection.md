@@ -2,7 +2,7 @@
 sidebarDepth: 2
 ---
 
-# 集锦
+# 墨迹
 
 > 日常踩坑集锦
 
@@ -205,14 +205,15 @@ html { filter: invert(1); }
         - 生命周期
           - 子类覆盖父类，需要执行父类生命周期是需要通过 super 执行
       - 参考
+
         > [Angular — Maintenance issue caused by component inheritance](https://lukeliutingchun.medium.com/angular-maintenance-issue-caused-by-component-inheritance-61fe4af85163)
         >
         > [How to inherit a component in Angular and reuse its template](https://medium.com/acute-angular/how-to-inherit-a-component-in-angular-and-reuse-its-template-88b9cbb4b55)
-        
+
 ## eslint no-shadow 错误提示修复
 
-  ```js
-      // note you must disable the base rule as it can report incorrect errors
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"]
-  ```
+```js
+    // note you must disable the base rule as it can report incorrect errors
+  "no-shadow": "off",
+  "@typescript-eslint/no-shadow": ["error"]
+```
