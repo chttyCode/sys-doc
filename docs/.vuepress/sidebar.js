@@ -166,7 +166,7 @@ module.exports = {
     {
       title: "分享",
       collapsable: true,
-      children: ["/shell/chrome-extension"],
+      children: ["/shell/chrome-extension", "/shell/to-share"],
     },
   ],
 };
