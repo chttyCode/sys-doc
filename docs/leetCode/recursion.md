@@ -1,6 +1,21 @@
 # 递归
 
+## 递归的理解
+
+## 递归的模版
+
 ## 习题
+
+- [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
+- [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
+- [226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/description/)
+- [98. 验证二叉搜索树](https://leetcode.cn/problems/validate-binary-search-tree/)
+- [104. 二叉树的最大深度](https://leetcode-cn.com/problems/maximum-depth-of-binary-tree)
+- [111. 二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
+- [297. 二叉树的序列化与反序列化](https://leetcode.cn/problems/serialize-and-deserialize-binary-tree/)
+- [77. 组合](https://leetcode.cn/problems/combinations/)
+- [46. 全排列](https://leetcode.cn/problems/permutations/)
+- [47. 全排列 II](https://leetcode-cn.com/problems/permutations-ii/)
 
 - 04.04. 检查平衡性
 
