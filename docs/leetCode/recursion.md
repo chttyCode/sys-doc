@@ -4,7 +4,7 @@
 
 ## 递归的模版
 
-## 习题
+## 习题集合
 
 - [70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
 - [22. 括号生成](https://leetcode.cn/problems/generate-parentheses/)
