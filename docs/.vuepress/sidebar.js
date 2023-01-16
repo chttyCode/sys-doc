@@ -5,7 +5,7 @@ module.exports = {
     ["vscode", "vscode"],
     ["typescript", "Typescript"],
     {
-      title: "JS",
+      title: "Javascript",
       collapsable: true,
       children: [
         "/programme/javascript",
@@ -19,6 +19,11 @@ module.exports = {
           ],
         },
       ],
+    },
+    {
+      title: "Java",
+      collapsable: true,
+      children: ["/programme/java-basic", "/programme/java-se.md"],
     },
     ["mini-program", "小程序"],
     {
