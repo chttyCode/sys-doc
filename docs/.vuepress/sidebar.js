@@ -152,7 +152,7 @@ module.exports = {
     ["", "指导思想"],
     ["collection", "贝壳"],
     {
-      title: "月报",
+      title: "2022",
       collapsable: true,
       children: [
         "/shell/01",
@@ -170,9 +170,27 @@ module.exports = {
       ],
     },
     {
+      title: "2023",
+      collapsable: true,
+      children: [
+        "/shell/2023-01",
+        "/shell/2023-02",
+        "/shell/2023-03",
+        "/shell/2023-04",
+        "/shell/2023-05",
+        "/shell/2023-06",
+        "/shell/2023-07",
+        "/shell/2023-08",
+        "/shell/2023-09",
+        "/shell/2023-10",
+        "/shell/2023-11",
+        "/shell/2023-12",
+      ],
+    },
+    {
       title: "分享",
       collapsable: true,
-      children: ["/shell/chrome-extension", "/shell/to-share"],
+      children: ["/shell/chrome-extension", "/shell/to-share", "/shell/regexp"],
     },
   ],
 };
