@@ -154,7 +154,7 @@ module.exports = {
     ["12-string", "字符串"],
   ],
   "/shell/": [
-    ["", "指导思想"],
+    ["", "think"],
     ["collection", "贝壳"],
     {
       title: "2022",
